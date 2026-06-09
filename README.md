@@ -60,3 +60,28 @@ streamlit run app.py
 ---
 
 ## 🏗️ Deep-Dive Architecture & Logic Flow
+
+[Telemetry Ingest: data.json]
+       │
+       ▼
+🚀 Agent 1: Fabric IQ Study Planner
+   └── Identifies Role & Certification Track
+   └── Sets Base Recommended Milestones
+       │
+       ▼
+🛡️ Agent 2: Work IQ Engagement Router (Burnout Guard)
+   └── Evaluates Focus Hours vs. Meeting Loads
+       │
+       ▼
+🧪 Agent 3: Foundry IQ Evaluation Gate
+   └── Validates Simulated Practice Score
+       │
+       ▼
+📊 Agent 4: Anonymized Manager Insights Dashboard
+   └── Scrubs all PII (Zero-Trust Privacy)
+   └── Computes Team Capacity Risk Flags
+```
+
+---
+
+
