@@ -3,7 +3,7 @@
 Apex-Orchestrator is a production-ready, cloud-native AI orchestrator designed to balance aggressive corporate workforce upskilling with defensive developer burnout guards. The system dynamically processes enterprise work signals, schedules optimal training pipelines, and enforces safety gates using an intelligent multi-agent network.
 
 ## 🌐 Live Application
-- **Live Link:** [View Live Streamlit Dashboard](https://apex-orchestrator-ensn6hvxntquaothjjaxv.streamlit.app/)
+- **Live Link:** [View Live Streamlit Dashboard](https://apex-orchestrator-ensn6hvxntxquaothjjaxv.streamlit.app/)
 
 ---
 
