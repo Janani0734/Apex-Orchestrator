@@ -56,7 +56,9 @@ pip install -r requirements.txt
 
 # Execute the local web server
 streamlit run app.py
+
 ---
+
 ## 🏗️ Deep-Dive Architecture & Logic Flow
 
 ```text
@@ -84,6 +86,7 @@ streamlit run app.py
    └── Scrubs all PII (Zero-Trust Privacy)
    └── Computes Macro-Level Team Capacity Risk Flags
 
+---
 
 ## Future Roadmap
 
