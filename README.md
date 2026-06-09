@@ -56,3 +56,39 @@ pip install -r requirements.txt
 
 # Execute the local web server
 streamlit run app.py
+---
+
+## 🏗️ Deep-Dive Architecture & Logic Flow
+
+```text
+[Telemetry Ingest: data.json]
+       │
+       ▼
+┌────────────────────────────────────────────────────────┐
+│ 🚀 Agent 1: Fabric IQ Study Planner                     │
+│ ──> Identifies Role & Certification Track              │
+│ ──> Sets Base Recommended Milestones                   │
+└──────────────────┬─────────────────────────────────────┘
+                   │
+                   ▼
+┌────────────────────────────────────────────────────────┐
+│ 🛡️ Agent 2: Work IQ Engagement Router (Burnout Guard) │
+│ ──> Evaluates Focus Hours vs. Meeting Loads            │
+│ ──> Constraint: If Focus < 15 hrs ──> Reduce Pacing     │
+│ ──> Action: Shifts Live Pings to Asynchronous Email   │
+└──────────────────┬─────────────────────────────────────┘
+                   │
+                   ▼
+┌────────────────────────────────────────────────────────┐
+│ 🧪 Agent 3: Foundry IQ Evaluation Gate                 │
+│ ──> Validates Simulated Practice Score                 │
+│ ──> If Score ≥ 75% ──> STATUS: APPROVED FOR VOUCHER     │
+│ ──> If Score < 74% ──> STATUS: REMEDIATION_LOOP        │
+└──────────────────┬─────────────────────────────────────┘
+                   │
+                   ▼
+┌────────────────────────────────────────────────────────┐
+│ 📊 Agent 4: Anonymized Manager Insights Dashboard       │
+│ ──> Scrubs all PII (Zero-Trust Privacy)                │
+│ ──> Computes Macro-Level Team Capacity Risk Flags      │
+└────────────────────────────────────────────────────────┘
