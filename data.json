@@ -1,0 +1,14 @@
+{
+  "learners": [
+    {"learner_id": "L-1001", "certification": "AZ-204", "practice_score_avg": 67},
+    {"learner_id": "L-1002", "certification": "AZ-400", "practice_score_avg": 85}
+  ],
+  "work_signals": [
+    {"employee_id": "L-1001", "meeting_hours_per_week": 24, "focus_hours_per_week": 6, "preferred_learning_slot": "Morning"},
+    {"employee_id": "L-1002", "meeting_hours_per_week": 10, "focus_hours_per_week": 18, "preferred_learning_slot": "Afternoon"}
+  ],
+  "fabric_iq_skills": {
+    "AZ-204": ["API Development", "Azure Functions", "Cloud Storage Engines"],
+    "AZ-400": ["CI/CD Pipelines", "Telemetry Monitoring", "GitHub Actions"]
+  }
+}
