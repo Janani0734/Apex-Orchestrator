@@ -72,34 +72,17 @@ streamlit run app.py
        ▼
 🛡️ Agent 2: Work IQ Engagement Router (Burnout Guard)
    └── Evaluates Focus Hours vs. Meeting Loads
-   └── Constraint: If Focus < 15 hrs ──> Reduce Pacing
-   └── Action: Shifts Live Pings to Asynchronous Email
        │
        ▼
 🧪 Agent 3: Foundry IQ Evaluation Gate
    └── Validates Simulated Practice Score
-   └── If Score ≥ 75% ──> STATUS: APPROVED FOR VOUCHER
-   └── If Score < 74% ──> STATUS: REMEDIATION_LOOP
        │
        ▼
 📊 Agent 4: Anonymized Manager Insights Dashboard
    └── Scrubs all PII (Zero-Trust Privacy)
-   └── Computes Macro-Level Team Capacity Risk Flags
+   └── Computes Team Capacity Risk Flags
 
 ---
 
-## Future Roadmap
-
-We are committed to evolving Apex-Orchestrator into a comprehensive Enterprise Talent Intelligence platform. Our upcoming milestones include:
-
-### Phase 1: Advanced Agentic Personalization
-- Implement personalized "Learning Styles" profiles (Visual, Auditory, Practical) to adjust the Fabric IQ study pathing.
-
-### Phase 2: Proactive Burnout Prediction
-- Integrate a sentiment analysis module to analyze non-sensitive telemetry for early signs of cognitive overload before they manifest as burnout.
-
-### Phase 3: Integration Ecosystem
-- Develop native connectors for popular enterprise tools (e.g., Slack, Microsoft Teams, Jira) to automate status updates and meeting scheduling directly from the orchestrator.
-
-### Phase 4: Predictive Certification Analytics
+ve Certification Analytics
 - Use historical data to forecast Time-to-Certification and suggest optimal assessment windows to improve learner success rates.
