@@ -56,3 +56,7 @@ pip install -r requirements.txt
 
 # Execute the local web server
 streamlit run app.py
+```
+---
+
+## 🏗️ Deep-Dive Architecture & Logic Flow
