@@ -61,27 +61,62 @@ streamlit run app.py
 
 ## 🏗️ Deep-Dive Architecture & Logic Flow
 
+```text
+
 [Telemetry Ingest: data.json]
+
        │
+
        ▼
+
 🚀 Agent 1: Fabric IQ Study Planner
+
    └── Identifies Role & Certification Track
+
    └── Sets Base Recommended Milestones
+
        │
+
        ▼
+
 🛡️ Agent 2: Work IQ Engagement Router (Burnout Guard)
+
    └── Evaluates Focus Hours vs. Meeting Loads
+
        │
+
        ▼
+
 🧪 Agent 3: Foundry IQ Evaluation Gate
+
    └── Validates Simulated Practice Score
+
        │
+
        ▼
+
 📊 Agent 4: Anonymized Manager Insights Dashboard
+
    └── Scrubs all PII (Zero-Trust Privacy)
+
    └── Computes Team Capacity Risk Flags
 ```
-
 ---
+
+## Future Roadmap
+
+We are committed to evolving Apex-Orchestrator into a comprehensive Enterprise Talent Intelligence platform. Our upcoming milestones include:
+
+### Phase 1: Advanced Agentic Personalization
+- Implement personalized "Learning Styles" profiles (Visual, Auditory, Practical) to adjust the Fabric IQ study pathing.
+
+### Phase 2: Proactive Burnout Prediction
+- Integrate a sentiment analysis module to analyze non-sensitive telemetry for early signs of cognitive overload before they manifest as burnout.
+
+### Phase 3: Integration Ecosystem
+- Develop native connectors for popular enterprise tools (e.g., Slack, Microsoft Teams, Jira) to automate status updates and meeting scheduling directly from the orchestrator.
+
+### Phase 4: Predictive Certification Analytics
+- Use historical data to forecast Time-to-Certification and suggest optimal assessment windows to improve learner success rates.
 
 
