@@ -46,13 +46,15 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
     agent1_output = ""
     agent2_output = ""
     is_overridden = meeting_hours > 20  
+    is_fallback = False
     
     col1, col2 = st.columns(2)
     
     with st.spinner("Initiating live cross-agent validation loop..."):
+        # ──► STEP 1: DATA INGESTION (TRY TO CONNECT TO OPENAI)
         try:
             if client is not None:
-                # ──► LIVE API STEP 1: RUN FABRIC IQ
+                # RUN FABRIC IQ LIVE
                 a1_system = "You are the Fabric IQ Agent. Generate a concise, high-impact weekly study plan sub-module for an IT engineer based on their target track. Keep it under 3 bullet points."
                 a1_response = client.chat.completions.create(
                     model="gpt-4o-mini",
@@ -64,7 +66,7 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
                 )
                 agent1_output = a1_response.choices[0].message.content
 
-                # ──► LIVE API STEP 2: RUN WORK IQ
+                # RUN WORK IQ LIVE
                 a2_system = f"You are the Work IQ Governance Agent. Audit Agent 1's plan. Current meetings: {meeting_hours}h, Focus: {focus_hours}h. If meetings > 20, trigger an OVERRIDE."
                 a2_response = client.chat.completions.create(
                     model="gpt-4o-mini",
@@ -76,87 +78,85 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
                 )
                 agent2_output = a2_response.choices[0].message.content
                 is_overridden = "OVERRIDE" in agent2_output.upper() or meeting_hours > 20
-                
-                # --- LIVE UI RENDERING (IF API SUCCEEDS) ---
-                with col1:
-                    st.markdown("<div class='agent-card'>", unsafe_allow_html=True)
-                    st.markdown("<span class='metric-badge' style='color:#0284c7; background:#e0f2fe;'>AGENT 01 // FABRIC IQ</span>", unsafe_allow_html=True)
-                    st.markdown("### 🚀 Dynamic Curriculum Generation")
-                    st.write(agent1_output)
-                    
-                    with st.expander("👁️ View Agent 1 Clear Reasoning Logs"):
-                        st.markdown("#### 🛠️ Agent Execution Context")
-                        st.json({"agent_name": "Fabric IQ Curriculum Allocator", "model_target": "gpt-4o-mini", "temperature": 0.3, "lifecycle_state": "EXECUTION_COMPLETED"})
-                        st.markdown("#### 📋 Raw Intermediate Thought Stream")
-                        st.code(f"[INFO] Ingesting target track parameter: '{target_track}'\n[PROCESSING] Calculating multi-agent pace constraints...\n[LLM RESPONSE] Successfully parsed curriculum blocks directly.", language="bash")
-                    st.markdown("</div>", unsafe_allow_html=True)
-
-                with col2:
-                    bg_color = "#fee2e2" if is_overridden else "#d1fae5"
-                    border_color = "#f8b4b4" if is_overridden else "#bbf7d0"
-                    
-                    st.markdown(f"<div class='agent-card' style='background:{bg_color}; border-color:{border_color};'>", unsafe_allow_html=True)
-                    st.markdown("<span class='metric-badge' style='color:#b91c1c; background:#fee2e2;'>AGENT 02 // WORK IQ</span>", unsafe_allow_html=True)
-                    st.markdown("### 🛡️ Active Burnout Safety Audit")
-                    st.write(agent2_output)
-                    
-                    with st.expander("👁️ View Agent 2 Conflict & Override Scenario Logs"):
-                        st.markdown("#### 🛡️ Governance Matrix Validation")
-                        st.json({"agent_name": "Work IQ Burnout Guard", "telemetry_evaluated": {"weekly_meeting_density": f"{meeting_hours} hours", "available_focus_reserve": f"{focus_hours} hours"}, "burnout_index_score": round(meeting_hours / (focus_hours + 1), 2), "action_taken": "FORCE_DOWNGRADE_OVERRIDE" if is_overridden else "APPROVE_PASS_THROUGH"})
-                        st.markdown("#### 📋 Consensus Loop Feedback Trace")
-                        if is_overridden:
-                            st.code("[CRITICAL] Burnout Index exceeds threshold safety limits.\n[CONFLICT RESOLUTION] Sending compensation frame to Layer 01...\n[REMEDIATION] Forcing study load reduction down to defensive thresholds.", language="bash")
-                        else:
-                            st.code("[NOMINAL] Burnout Index within safe limits.\n[CONSENSUS] Validation cleared. No cross-agent negotiation loop required.", language="bash")
-                    st.markdown("</div>", unsafe_allow_html=True)
             else:
-                raise ValueError("No active client token configuration verified.")
+                raise ValueError("No token verification.")
                 
         except Exception as quota_error:
-            # ──► CRASH-PROOF FALLBACK PATH (Runs perfectly if API has no credits)
-            st.toast("🔄 Live API key missing or limited. Engaging local backup telemetry simulation.", icon="⚙️")
+            # ──► STEP 2: FALLBACK DATA INGESTION (IF LIVE API FAILS)
+            is_fallback = True
+            st.toast("🔄 API limit hit or key missing. Engaging local backup telemetry simulation.", icon="⚙️")
             
-            simulated_a1 = f"• **Core Focus**: High-Availability System Integration for **{target_track}**\n• **Target Milestone**: Architectural Ingestion & Telemetry Processing\n• **Assigned Velocity Load**: 12 Hours / Week baseline track pacing strategy."
+            agent1_output = (
+                f"• **Core Focus**: High-Availability System Integration for **{target_track}**\n"
+                f"• **Target Milestone**: Architectural Ingestion & Telemetry Processing\n"
+                f"• **Assigned Velocity Load**: 12 Hours / Week baseline track pacing strategy."
+            )
             
             if meeting_hours > 20:
-                simulated_a2 = f"⚠️ **CRITICAL OVERRIDE COMPROMISE FLAG ACTIVATED**\n\nDetected extreme scheduling anomalies (Meeting Density: **{meeting_hours} Hours**). Fabric load downgraded from 12 hours down to **4 hours maximum** to protect baseline resource balance."
+                agent2_output = (
+                    f"⚠️ **CRITICAL OVERRIDE COMPROMISE FLAG ACTIVATED**\n\n"
+                    f"Detected extreme scheduling anomalies (Meeting Density: **{meeting_hours} Hours**). "
+                    f"Fabric load downgraded from 12 hours down to **4 hours maximum** to protect baseline resource balance."
+                )
                 is_overridden = True
             else:
-                simulated_a2 = f"🟢 **NOMINAL RECOVERY VALIDATION PATH CLEAR**\n\nOperational load balances within acceptable design thresholds (Meeting Density: {meeting_hours} Hours). No resource remediation loops required. Pacing verified at 100% capacity."
+                agent2_output = (
+                    f"🟢 **NOMINAL RECOVERY VALIDATION PATH CLEAR**\n\n"
+                    f"Operational load balances within acceptable design thresholds (Meeting Density: {meeting_hours} Hours). "
+                    f"No resource remediation loops required. Pacing verified at 100% capacity."
+                )
                 is_overridden = False
 
-            # --- FALLBACK UI RENDERING (Perfect layout presentation) ---
-            with col1:
-                st.markdown("<div class='agent-card'>", unsafe_allow_html=True)
-                st.markdown("<span class='metric-badge' style='color:#0284c7; background:#e0f2fe;'>AGENT 01 // FABRIC IQ (Edge-Fallback)</span>", unsafe_allow_html=True)
-                st.markdown("### 🚀 Dynamic Curriculum Generation")
-                st.write(simulated_a1)
-                
-                with st.expander("👁️ View Agent 1 Clear Reasoning Logs"):
-                    st.markdown("#### 🛠️ Agent Context Matrix")
-                    st.json({"agent_name": "Fabric IQ Allocator", "mode": "Fallback_Local_Matrix"})
-                    st.markdown("#### 📋 Raw Intermediate Thought Stream")
-                    st.code(f"[LOCAL_FALLBACK] Serving cached local matrix modules for context stream.", language="bash")
-                st.markdown("</div>", unsafe_allow_html=True)
+        # ──► STEP 3: UNIFIED RENDER ENGINE (RUNS CLEANLY EVERY TIME)
+        with col1:
+            badge_label = "AGENT 01 // FABRIC IQ (Edge-Fallback)" if is_fallback else "AGENT 01 // FABRIC IQ"
+            st.markdown("<div class='agent-card'>", unsafe_allow_html=True)
+            st.markdown(f"<span class='metric-badge' style='color:#0284c7; background:#e0f2fe;'>{badge_label}</span>", unsafe_allow_html=True)
+            st.markdown("### 🚀 Dynamic Curriculum Generation")
+            st.write(agent1_output)
+            
+            with st.expander("👁️ View Agent 1 Clear Reasoning Logs"):
+                st.markdown("#### 🛠️ Agent Execution Context")
+                st.json({
+                    "agent_name": "Fabric IQ Curriculum Allocator",
+                    "model_target": "Local_Fallback_Core" if is_fallback else "gpt-4o-mini",
+                    "temperature": 0.3,
+                    "lifecycle_state": "EXECUTION_COMPLETED"
+                })
+                st.markdown("#### 📋 Raw Intermediate Thought Stream")
+                if is_fallback:
+                    st.code("[LOCAL_FALLBACK] Serving cached local matrix modules for context stream.", language="bash")
+                else:
+                    st.code(f"[INFO] Ingesting target track parameter: '{target_track}'\n[PROCESSING] Calculating multi-agent pace constraints...\n[LLM RESPONSE] Successfully parsed curriculum blocks directly.", language="bash")
+            st.markdown("</div>", unsafe_allow_html=True)
 
-            with col2:
-                bg_color = "#fee2e2" if is_overridden else "#d1fae5"
-                border_color = "#f8b4b4" if is_overridden else "#bbf7d0"
-                
-                st.markdown(f"<div class='agent-card' style='background:{bg_color}; border-color:{border_color};'>", unsafe_allow_html=True)
-                st.markdown("<span class='metric-badge' style='color:#b91c1c; background:#fee2e2;'>AGENT 02 // WORK IQ (Edge-Fallback)</span>", unsafe_allow_html=True)
-                st.markdown("### 🛡️ Active Burnout Safety Audit")
-                st.write(simulated_a2)
-                
-                with st.expander("👁️ View Agent 2 Conflict & Override Scenario Logs"):
-                    st.markdown("#### 📊 Metric Analytics")
-                    st.json({"simulated_burnout_factor": round(meeting_hours / (focus_hours + 1), 2), "threshold_limit": 2.5, "status": "OVERRIDDEN" if is_overridden else "NOMINAL"})
-                    st.markdown("#### 📋 Consensus Loop Feedback Trace")
-                    if is_overridden:
-                        st.code("[CRITICAL] Simulated Burnout Index exceeds safety limits.\n[FALLBACK_ACTION] Successfully executed backup compensation shift.", language="bash")
-                    else:
-                        st.code("[NOMINAL] Simulated Burnout Index within safe limits.\n[FALLBACK_ACTION] Verification cleared directly.", language="bash")
-                st.markdown("</div>", unsafe_allow_html=True)
+        with col2:
+            badge_label = "AGENT 02 // WORK IQ (Edge-Fallback)" if is_fallback else "AGENT 02 // WORK IQ"
+            bg_color = "#fee2e2" if is_overridden else "#d1fae5"
+            border_color = "#f8b4b4" if is_overridden else "#bbf7d0"
+            
+            st.markdown(f"<div class='agent-card' style='background:{bg_color}; border-color:{border_color};'>", unsafe_allow_html=True)
+            st.markdown(f"<span class='metric-badge' style='color:#b91c1c; background:#fee2e2;'>{badge_label}</span>", unsafe_allow_html=True)
+            st.markdown("### 🛡️ Active Burnout Safety Audit")
+            st.write(agent2_output)
+            
+            with st.expander("👁️ View Agent 2 Conflict & Override Scenario Logs"):
+                st.markdown("#### 🛡️ Governance Matrix Validation")
+                st.json({
+                    "agent_name": "Work IQ Burnout Guard",
+                    "telemetry_evaluated": {
+                        "weekly_meeting_density": f"{meeting_hours} hours",
+                        "available_focus_reserve": f"{focus_hours} hours"
+                    },
+                    "burnout_index_score": round(meeting_hours / (focus_hours + 1), 2),
+                    "action_taken": "FORCE_DOWNGRADE_OVERRIDE" if is_overridden else "APPROVE_PASS_THROUGH"
+                })
+                st.markdown("#### 📋 Consensus Loop Feedback Trace")
+                if is_overridden:
+                    st.code("[CRITICAL] Burnout Index exceeds threshold safety limits.\n[CONFLICT RESOLUTION] Sending compensation frame to Layer 01...\n[REMEDIATION] Forcing study load reduction down to defensive thresholds.", language="bash")
+                else:
+                    st.code("[NOMINAL] Burnout Index within safe limits.\n[CONSENSUS] Validation cleared. No cross-agent negotiation loop required.", language="bash")
+            st.markdown("</div>", unsafe_allow_html=True)
 
 # --- PIPELINE METRIC LEDGER ---
 st.markdown("### 🔄 Core Process Monitoring Ledgers")
