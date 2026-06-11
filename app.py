@@ -13,151 +13,217 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- SECURE CREDENTIAL CHECK ---
-api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-
-client = None
-if api_key and not api_key.startswith("your-"):
-    try:
-        client = OpenAI(api_key=api_key)
-    except Exception as e:
-        st.error(f"Initialization Error: {str(e)}")
-
 # --- SYSTEM DASHBOARD HEADERS ---
 st.markdown("<h1 style='margin:0;'>⚙️ Apex-Orchestrator Control Console</h1>", unsafe_allow_html=True)
 st.markdown("<p style='color:#64748b; font-size:15px;'>Live Multi-Agent Autonomous Communication Mesh</p>", unsafe_allow_html=True)
 st.markdown("---")
 
-# --- LIVE TELEMETRY CONTROL PANEL ---
+# --- LIVE TELEMETRY CONTROL PANEL (SIDEBAR FIRST, BEFORE CLIENT INIT) ---
 with st.sidebar:
     st.header("📊 Live Signals Ingest")
     target_track = st.text_input("Target Certification Path", "AZ-204: Developing Solutions for Azure")
     meeting_hours = st.slider("Weekly Meeting Density (Work IQ)", 0, 40, 26)
     focus_hours = st.slider("Available Focus Reserve (Fabric IQ)", 0, 40, 6)
-    
+
     st.markdown("---")
     st.markdown("### 🔑 Live Credential Override")
-    user_key_input = st.text_input("Paste OpenAI API Key to test on the fly:", type="password")
-    if user_key_input:
-        client = OpenAI(api_key=user_key_input)
+    user_key_input = st.text_input("Paste Groq API Key:", type="password")
+
+# --- SECURE CREDENTIAL RESOLUTION (AFTER SIDEBAR) ---
+# Priority: sidebar input > streamlit secrets > environment variable
+api_key = ""
+if user_key_input and len(user_key_input) > 10:
+    api_key = user_key_input
+else:
+    try:
+        api_key = st.secrets.get("GROQ_API_KEY", "")
+    except Exception:
+        pass
+    if not api_key:
+        api_key = os.getenv("GROQ_API_KEY", "")
+
+# --- GROQ CLIENT INITIALIZATION ---
+client = None
+if api_key:
+    try:
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.groq.com/openai/v1"
+        )
+    except Exception as e:
+        st.error(f"Client Initialization Error: {str(e)}")
+
+MODEL = "llama-3.1-8b-instant"
 
 # --- EXECUTION INFRASTRUCTURE BUTTON TRIGGER ---
 if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
     agent1_output = ""
     agent2_output = ""
-    is_overridden = meeting_hours > 20  
+    is_overridden = meeting_hours > 20
     is_fallback = False
-    
-    col1, col2 = st.columns(2)
-    
-    with st.spinner("Initiating live cross-agent validation loop..."):
-        # ──► STEP 1: DATA INGESTION (TRY TO CONNECT TO OPENAI)
-        try:
-            if client is not None:
-                # RUN FABRIC IQ LIVE
-                a1_system = "You are the Fabric IQ Agent. Generate a concise, high-impact weekly study plan sub-module for an IT engineer based on their target track. Keep it under 3 bullet points."
-                a1_response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {"role": "system", "content": a1_system},
-                        {"role": "user", "content": f"Create a high-velocity study track layout for {target_track}."}
-                    ],
-                    max_tokens=250
-                )
-                agent1_output = a1_response.choices[0].message.content
 
-                # RUN WORK IQ LIVE
-                a2_system = f"You are the Work IQ Governance Agent. Audit Agent 1's plan. Current meetings: {meeting_hours}h, Focus: {focus_hours}h. If meetings > 20, trigger an OVERRIDE."
-                a2_response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {"role": "system", "content": a2_system},
-                        {"role": "user", "content": f"Review this plan:\n\n{agent1_output}"}
-                    ],
-                    max_tokens=250
-                )
-                agent2_output = a2_response.choices[0].message.content
-                is_overridden = "OVERRIDE" in agent2_output.upper() or meeting_hours > 20
-            else:
-                raise ValueError("No token verification.")
-                
-        except Exception as quota_error:
-            # ──► STEP 2: FALLBACK DATA INGESTION (IF LIVE API FAILS)
+    col1, col2 = st.columns(2)
+
+    with st.spinner("Initiating live cross-agent validation loop..."):
+
+        # ──► STEP 1: LIVE LLM INFERENCE
+        try:
+            if client is None:
+                raise ValueError("No API key configured.")
+
+            # AGENT 1: FABRIC IQ — Study Plan Generator
+            a1_system = (
+                "You are the Fabric IQ Agent inside the Apex-Orchestrator multi-agent system. "
+                "Generate a concise, high-impact weekly study plan for an IT engineer. "
+                "Show your reasoning step by step. Keep it under 4 bullet points. "
+                "Be specific about hours, milestones, and topics."
+            )
+            a1_response = client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": a1_system},
+                    {"role": "user", "content": (
+                        f"Create a study track for: {target_track}. "
+                        f"The engineer has {focus_hours} focus hours/week and {meeting_hours} meeting hours/week."
+                    )}
+                ],
+                max_tokens=300,
+                temperature=0.3
+            )
+            agent1_output = a1_response.choices[0].message.content
+
+            # AGENT 2: WORK IQ — Burnout Guard & Conflict Resolver
+            a2_system = (
+                "You are the Work IQ Governance Agent inside the Apex-Orchestrator multi-agent system. "
+                "Your job is to audit Agent 1's study plan and protect the engineer from burnout. "
+                f"Current telemetry: meeting_hours={meeting_hours}, focus_hours={focus_hours}. "
+                f"Burnout index = {round(meeting_hours / max(focus_hours, 1), 2)} (meetings/focus). "
+                "If meetings > 20 hours OR burnout index > 2.0, you MUST trigger an OVERRIDE. "
+                "Show your conflict resolution reasoning explicitly. "
+                "Start your response with either OVERRIDE ACTIVATED or PLAN APPROVED."
+            )
+            a2_response = client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": a2_system},
+                    {"role": "user", "content": f"Audit this Agent 1 plan:\n\n{agent1_output}"}
+                ],
+                max_tokens=300,
+                temperature=0.3
+            )
+            agent2_output = a2_response.choices[0].message.content
+            is_overridden = "OVERRIDE" in agent2_output.upper() or meeting_hours > 20
+
+        except Exception as e:
+            # ──► STEP 2: GRACEFUL FALLBACK
             is_fallback = True
-            st.toast("🔄 API limit hit or key missing. Engaging local backup telemetry simulation.", icon="⚙️")
-            
+            st.toast(f"⚙️ Running in simulation mode: {str(e)[:60]}", icon="🔄")
+
             agent1_output = (
                 f"• **Core Focus**: High-Availability System Integration for **{target_track}**\n"
                 f"• **Target Milestone**: Architectural Ingestion & Telemetry Processing\n"
-                f"• **Assigned Velocity Load**: 12 Hours / Week baseline track pacing strategy."
+                f"• **Assigned Velocity Load**: 12 Hours / Week baseline track pacing strategy.\n"
+                f"• **Recommended Tools**: Azure Portal, MS Learn sandbox environments."
             )
-            
+
             if meeting_hours > 20:
                 agent2_output = (
-                    f"⚠️ **CRITICAL OVERRIDE COMPROMISE FLAG ACTIVATED**\n\n"
-                    f"Detected extreme scheduling anomalies (Meeting Density: **{meeting_hours} Hours**). "
-                    f"Fabric load downgraded from 12 hours down to **4 hours maximum** to protect baseline resource balance."
+                    f"⚠️ **OVERRIDE ACTIVATED**\n\n"
+                    f"Burnout index = {round(meeting_hours / max(focus_hours, 1), 2)} — exceeds threshold 2.0. "
+                    f"Meeting density: **{meeting_hours}h** vs focus reserve: **{focus_hours}h**. "
+                    f"Fabric load downgraded from 12h → **4h maximum** to protect deep-work zones."
                 )
                 is_overridden = True
             else:
                 agent2_output = (
-                    f"🟢 **NOMINAL RECOVERY VALIDATION PATH CLEAR**\n\n"
-                    f"Operational load balances within acceptable design thresholds (Meeting Density: {meeting_hours} Hours). "
-                    f"No resource remediation loops required. Pacing verified at 100% capacity."
+                    f"✅ **PLAN APPROVED**\n\n"
+                    f"Burnout index = {round(meeting_hours / max(focus_hours, 1), 2)} — within safe limits. "
+                    f"Meeting density: {meeting_hours}h. Focus reserve: {focus_hours}h. "
+                    f"No override required. Agent 1 plan cleared for execution."
                 )
                 is_overridden = False
 
-        # ──► STEP 3: UNIFIED RENDER ENGINE (RUNS CLEANLY EVERY TIME)
+        # ──► STEP 3: RENDER OUTPUTS
         with col1:
-            badge_label = "AGENT 01 // FABRIC IQ (Edge-Fallback)" if is_fallback else "AGENT 01 // FABRIC IQ"
+            badge_label = "AGENT 01 // FABRIC IQ (Simulation)" if is_fallback else "AGENT 01 // FABRIC IQ ✅ Live LLM"
+            badge_color = "#0284c7" if not is_fallback else "#6b7280"
+            badge_bg = "#e0f2fe" if not is_fallback else "#f1f5f9"
             st.markdown("<div class='agent-card'>", unsafe_allow_html=True)
-            st.markdown(f"<span class='metric-badge' style='color:#0284c7; background:#e0f2fe;'>{badge_label}</span>", unsafe_allow_html=True)
+            st.markdown(f"<span class='metric-badge' style='color:{badge_color}; background:{badge_bg};'>{badge_label}</span>", unsafe_allow_html=True)
             st.markdown("### 🚀 Dynamic Curriculum Generation")
             st.write(agent1_output)
-            
-            with st.expander("👁️ View Agent 1 Clear Reasoning Logs"):
+
+            with st.expander("👁️ View Agent 1 Reasoning Logs"):
                 st.markdown("#### 🛠️ Agent Execution Context")
                 st.json({
                     "agent_name": "Fabric IQ Curriculum Allocator",
-                    "model_target": "Local_Fallback_Core" if is_fallback else "gpt-4o-mini",
+                    "model": "Simulation" if is_fallback else MODEL,
+                    "provider": "Local Fallback" if is_fallback else "Groq (LLaMA-3.1)",
                     "temperature": 0.3,
+                    "inputs": {
+                        "target_track": target_track,
+                        "focus_hours": focus_hours,
+                        "meeting_hours": meeting_hours
+                    },
                     "lifecycle_state": "EXECUTION_COMPLETED"
                 })
-                st.markdown("#### 📋 Raw Intermediate Thought Stream")
+                st.markdown("#### 📋 Reasoning Trace")
                 if is_fallback:
-                    st.code("[LOCAL_FALLBACK] Serving cached local matrix modules for context stream.", language="bash")
+                    st.code("[SIMULATION] No API key detected. Serving deterministic fallback plan.", language="bash")
                 else:
-                    st.code(f"[INFO] Ingesting target track parameter: '{target_track}'\n[PROCESSING] Calculating multi-agent pace constraints...\n[LLM RESPONSE] Successfully parsed curriculum blocks directly.", language="bash")
+                    st.code(
+                        f"[INFO] Target track: '{target_track}'\n"
+                        f"[INFO] Focus hours available: {focus_hours}h/week\n"
+                        f"[PROCESSING] Sending to Groq LLaMA-3.1 for curriculum generation...\n"
+                        f"[SUCCESS] Live LLM response parsed and rendered.",
+                        language="bash"
+                    )
             st.markdown("</div>", unsafe_allow_html=True)
 
         with col2:
-            badge_label = "AGENT 02 // WORK IQ (Edge-Fallback)" if is_fallback else "AGENT 02 // WORK IQ"
+            badge_label = "AGENT 02 // WORK IQ (Simulation)" if is_fallback else "AGENT 02 // WORK IQ ✅ Live LLM"
             bg_color = "#fee2e2" if is_overridden else "#d1fae5"
             border_color = "#f8b4b4" if is_overridden else "#bbf7d0"
-            
+
             st.markdown(f"<div class='agent-card' style='background:{bg_color}; border-color:{border_color};'>", unsafe_allow_html=True)
             st.markdown(f"<span class='metric-badge' style='color:#b91c1c; background:#fee2e2;'>{badge_label}</span>", unsafe_allow_html=True)
             st.markdown("### 🛡️ Active Burnout Safety Audit")
             st.write(agent2_output)
-            
-            with st.expander("👁️ View Agent 2 Conflict & Override Scenario Logs"):
+
+            with st.expander("👁️ View Agent 2 Conflict & Override Logs"):
                 st.markdown("#### 🛡️ Governance Matrix Validation")
                 st.json({
                     "agent_name": "Work IQ Burnout Guard",
-                    "telemetry_evaluated": {
-                        "weekly_meeting_density": f"{meeting_hours} hours",
-                        "available_focus_reserve": f"{focus_hours} hours"
+                    "model": "Simulation" if is_fallback else MODEL,
+                    "provider": "Local Fallback" if is_fallback else "Groq (LLaMA-3.1)",
+                    "telemetry": {
+                        "weekly_meeting_density": f"{meeting_hours}h",
+                        "available_focus_reserve": f"{focus_hours}h",
+                        "burnout_index_score": round(meeting_hours / max(focus_hours, 1), 2)
                     },
-                    "burnout_index_score": round(meeting_hours / (focus_hours + 1), 2),
                     "action_taken": "FORCE_DOWNGRADE_OVERRIDE" if is_overridden else "APPROVE_PASS_THROUGH"
                 })
                 st.markdown("#### 📋 Consensus Loop Feedback Trace")
                 if is_overridden:
-                    st.code("[CRITICAL] Burnout Index exceeds threshold safety limits.\n[CONFLICT RESOLUTION] Sending compensation frame to Layer 01...\n[REMEDIATION] Forcing study load reduction down to defensive thresholds.", language="bash")
+                    st.code(
+                        f"[CRITICAL] Burnout index {round(meeting_hours / max(focus_hours,1), 2)} exceeds threshold 2.0\n"
+                        f"[CONFLICT] Agent 2 overriding Agent 1 study velocity...\n"
+                        f"[RESOLUTION] Study load reduced to protect {focus_hours}h focus reserve.\n"
+                        f"[ACTION] FORCE_DOWNGRADE_OVERRIDE applied.",
+                        language="bash"
+                    )
                 else:
-                    st.code("[NOMINAL] Burnout Index within safe limits.\n[CONSENSUS] Validation cleared. No cross-agent negotiation loop required.", language="bash")
+                    st.code(
+                        f"[OK] Burnout index {round(meeting_hours / max(focus_hours,1), 2)} within safe limits.\n"
+                        f"[CONSENSUS] Agent 1 plan approved by Work IQ governance layer.\n"
+                        f"[ACTION] APPROVE_PASS_THROUGH.",
+                        language="bash"
+                    )
             st.markdown("</div>", unsafe_allow_html=True)
 
 # --- PIPELINE METRIC LEDGER ---
 st.markdown("### 🔄 Core Process Monitoring Ledgers")
-st.info("Pipeline State Monitoring Matrix: Active and listening for live multi-agent execution frames.")
+if client:
+    st.success("✅ Live LLM Connected — Groq LLaMA-3.1 active. Enter telemetry and click Execute.")
+else:
+    st.warning("⚠️ Running in simulation mode. Add your Groq API key in the sidebar to enable live LLM reasoning.")
