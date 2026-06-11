@@ -22,20 +22,20 @@ else:
     learner = {"id": "L-1002", "name": "Alex Miller", "skill_level": "Advanced"}
     telemetry = {"meeting_hours": 6, "focus_hours": 32, "recent_mock_score": 88, "backlog": "None"}
 
-# --- SYSTEM HEALTH HERO BANNER (Addresses Audit Point #3) ---
+# --- SYSTEM HEALTH HERO BANNER ---
 if telemetry["meeting_hours"] > 20 and telemetry["recent_mock_score"] < 75:
     st.markdown(
         """<div style='background-color:#fff3cd; padding:20px; border-radius:8px; border-left:8px solid #ffc107; margin-bottom: 25px;'>
         <h3 style='color:#856404; margin:0;'>⚠️ SYSTEM STATUS: ATTENTION REQUIRED / ACTIVE MITIGATION LOOP RUNNING</h3>
         <p style='color:#856404; margin:5px 0 0 0;'>Multi-agent core has actively intercepted heavy meeting density anomalies alongside low initial baseline scores.</p>
-        </div>""", unsafe_style_html=True
+        </div>""", unsafe_allow_html=True
     )
 else:
     st.markdown(
         """<div style='background-color:#d4edda; padding:20px; border-radius:8px; border-left:8px solid #28a745; margin-bottom: 25px;'>
         <h3 style='color:#155724; margin:0;'>🟢 SYSTEM STATUS: NOMINAL PERFORMANCE STABLE</h3>
         <p style='color:#155724; margin:5px 0 0 0;'>All workflow parameters operating cleanly within target enterprise constraints. Voucher track validation cleared directly.</p>
-        </div>""", unsafe_style_html=True
+        </div>""", unsafe_allow_html=True
     )
 
 st.title("🤖 Apex-Orchestrator: Multi-Agent Workspace Control")
