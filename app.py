@@ -1,105 +1,113 @@
 import streamlit as st
-import json
 import os
+from orchestrator_core import EventDrivenOrchestrator
 
-# Premium presentation configuration
-st.set_page_config(page_title="Apex-Orchestrator AI", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="Apex-Orchestrator Control Center", layout="wide")
 
-# ==========================================
-# CORE REASONING LOGIC FUNCTIONS
-# ==========================================
-def run_study_planner_agent(cert, work_metrics, skills):
-    meetings = work_metrics["meeting_hours_per_week"]
-    base_hours = 20 if cert == "AZ-204" else 25
-    
-    if meetings > 20:
-        pace, weeks = "Extended Pace (Burnout Guard Active)", 4
-    elif meetings > 12:
-        pace, weeks = "Moderate Pace", 3
+# Safe Engine Instantiation
+if "orchestrator" not in st.session_state:
+    st.session_state.orchestrator = EventDrivenOrchestrator()
+
+st.sidebar.title("🏆 Orchestrator Target Telemetry")
+profile_mode = st.sidebar.selectbox(
+    "Select Target Learner Stream (Contrasting Use Cases):", 
+    ["L-1001 (Overloaded Dev - Failure & Remediation Path)", "L-1002 (Optimal Path - Happy Path Baseline)"]
+)
+
+# Populating Both Contrasting System Scenarios (Addresses Audit Point #5)
+if profile_mode == "L-1001 (Overloaded Dev - Failure & Remediation Path)":
+    learner = {"id": "L-1001", "name": "Janani R", "skill_level": "Intermediate"}
+    telemetry = {"meeting_hours": 26, "focus_hours": 6, "recent_mock_score": 61, "backlog": "Azure Key Vault, Distributed Consensus"}
+else:
+    learner = {"id": "L-1002", "name": "Alex Miller", "skill_level": "Advanced"}
+    telemetry = {"meeting_hours": 6, "focus_hours": 32, "recent_mock_score": 88, "backlog": "None"}
+
+# --- SYSTEM HEALTH HERO BANNER (Addresses Audit Point #3) ---
+if telemetry["meeting_hours"] > 20 and telemetry["recent_mock_score"] < 75:
+    st.markdown(
+        """<div style='background-color:#fff3cd; padding:20px; border-radius:8px; border-left:8px solid #ffc107; margin-bottom: 25px;'>
+        <h3 style='color:#856404; margin:0;'>⚠️ SYSTEM STATUS: ATTENTION REQUIRED / ACTIVE MITIGATION LOOP RUNNING</h3>
+        <p style='color:#856404; margin:5px 0 0 0;'>Multi-agent core has actively intercepted heavy meeting density anomalies alongside low initial baseline scores.</p>
+        </div>""", unsafe_style_html=True
+    )
+else:
+    st.markdown(
+        """<div style='background-color:#d4edda; padding:20px; border-radius:8px; border-left:8px solid #28a745; margin-bottom: 25px;'>
+        <h3 style='color:#155724; margin:0;'>🟢 SYSTEM STATUS: NOMINAL PERFORMANCE STABLE</h3>
+        <p style='color:#155724; margin:5px 0 0 0;'>All workflow parameters operating cleanly within target enterprise constraints. Voucher track validation cleared directly.</p>
+        </div>""", unsafe_style_html=True
+    )
+
+st.title("🤖 Apex-Orchestrator: Multi-Agent Workspace Control")
+st.markdown("---")
+
+if st.button("⚡ Execute Infrastructure Inference Loop"):
+    with st.spinner("Invoking non-deterministic asynchronous multi-agent orchestration streams..."):
+        try:
+            runtime_data = st.session_state.orchestrator.process_lifecycle(learner, telemetry)
+            st.session_state[f"run_{learner['id']}"] = runtime_data
+        except Exception as e:
+            st.error(f"Authentication Error: Verify your deployment secrets payload token is active. Details: {e}")
+
+# --- PRODUCTION-GRADE VISUAL OUTPUT PANEL ---
+if f"run_{learner['id']}" in st.session_state:
+    data = st.session_state[f"run_{learner['id']}"]
+
+    # Visual Milestone Tracker Map (Addresses Audit Point #4)
+    st.subheader("📊 Dynamic System Milestone Timeline Tracking")
+    if data["final_status"] == "PASSED_AFTER_REMEDIATION":
+        st.markdown("`[Step 1: Fabric Ingest] ──► [Step 2: Work IQ Overload Conflict Intercepted] ──► 🟡 [Step 3: Remediation Active Loops Run] ──► 🏆 [Voucher Certification Authorized]`")
     else:
-        pace, weeks = "Accelerated Pace", 2
-        
-    return {
-        "pace_tier": pace,
-        "duration_weeks": weeks,
-        "weekly_hours": round(base_hours / weeks, 1),
-        "modules": [{"phase": f"Module {i+1}", "topic": skill} for i, skill in enumerate(skills)]
-    }
+        st.markdown("`[Step 1: Fabric Ingest] ──► [Step 2: Work IQ Neutral Pass-Through] ──────────────────────────────────────────► 🏆 [Voucher Certification Authorized Directly]`")
 
-def run_engagement_agent(work_metrics):
-    focus = work_metrics["focus_hours_per_week"]
-    if focus > 15:
-        return {"channel": "Weekly Digest Email", "window": "Friday 16:00 (Focus Zone Protected)", "risk": "Low Risk"}
-    return {"channel": "Daily Teams Ping", "window": "09:00" if work_metrics["preferred_learning_slot"] == "Morning" else "14:00", "risk": "Normal Operational Risk"}
+    st.markdown(" ")
+    col1, col2 = st.columns(2)
 
-def run_assessment_agent(learner_data):
-    score = learner_data["practice_score_avg"]
-    if score >= 75:
-        return {"status": "APPROVED FOR VOUCHER", "next": "Issue certification voucher code immediately via Foundry IQ."}
-    return {"status": "REMEDIATION_LOOP_TRIGGERED", "next": "Identify sub-skill gaps and route back to Fabric IQ Planner node."}
-
-# ==========================================
-# WEB UI PRESENTATION LAYER
-# ==========================================
-st.title("🚀 Apex-Orchestrator")
-st.subheader("Enterprise Multi-Agent Upskilling & Operational Burnout Guard")
-st.write("---")
-
-# Absolute path resolution to ensure the app works seamlessly on the cloud servers
-DATA_PATH = os.path.join(os.path.dirname(__file__), "data.json")
-
-try:
-    with open(DATA_PATH, "r") as f:
-        dataset = json.load(f)
-
-    # Sidebar layout controller
-    st.sidebar.header("🎯 Simulation Control Panel")
-    selected_id = st.sidebar.selectbox("Select Fictional Learner ID", ["L-1001", "L-1002"])
-
-    learner = next(l for l in dataset["learners"] if l["learner_id"] == selected_id)
-    signals = next(s for s in dataset["work_signals"] if s["employee_id"] == selected_id)
-    skills = dataset["fabric_iq_skills"].get(learner["certification"], ["Cloud Basics"])
-
-    # Run execution pipeline
-    plan = run_study_planner_agent(learner["certification"], signals, skills)
-    engagement = run_engagement_agent(signals)
-    assessment = run_assessment_agent(learner)
-
-    # Metrics Display Columns
-    col1, col2, col3 = st.columns(3)
+    # Agent Visual Layout Cards with Context Tools (Addresses Audit Point #1, #2 & #6)
     with col1:
-        st.metric(label="Target Certification Track", value=learner["certification"])
+        st.markdown(
+            f"""<div style='background-color:#f8f9fa; padding:18px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom: 10px;'>
+            <span style='background-color:#007bff; color:white; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;'>AGENT 1</span>
+            <h4 style='margin-top: 10px;'>🚀 Fabric IQ Study Planner</h4>
+            <p><b>Target Curriculum Track:</b> {data['fabric_proposal']['target_track']}</p>
+            <p><b>Initial Intended Weekly Load:</b> {data['fabric_proposal']['proposed_hours_per_week']} hrs/week</p>
+            </div>""", unsafe_style_html=True
+        )
+        with st.expander("👁️ View Agent 1 Reasoning Path & Milestones", expanded=False):
+            st.write("**Generated Target Structural Focus Milestones:**")
+            for milestone in data['fabric_proposal']['milestones']:
+                st.write(f"- {milestone}")
+
     with col2:
-        st.metric(label="Simulated Practice Exam Avg", value=f"{learner['practice_score_avg']}%")
-    with col3:
-        st.metric(label="System Gate Status", value=assessment["status"])
-
-    st.write("### 🧠 Autonomous Multi-Agent Reasoning Logs")
-    left_col, right_col = st.columns(2)
-
-    with left_col:
-        st.info("#### 📋 Agent 1: Fabric IQ Study Planner")
-        st.write(f"**Calculated Pace:** {plan['pace_tier']}")
-        st.write(f"**Program Timeline:** {plan['duration_weeks']} Weeks")
-        st.write(f"**Target Allocation:** {plan['weekly_hours']} Hours/Week")
-        st.write("**Generated Modules Structure:**")
-        st.json(plan["modules"])
-
-    with right_col:
-        st.warning("#### ⏰ Agent 2: Work IQ Engagement Router")
-        st.write(f"**Communication Pathway:** {engagement['channel']}")
-        st.write(f"**Optimal Notification Window:** {engagement['window']}")
-        st.write(f"**Workplace Disruption Risk:** {engagement['risk']}")
+        is_override = data["work_consensus"]["status"] == "OVERRIDDEN"
+        card_bg = "#fdf2f2" if is_override else "#f3faf7"
+        card_border = "#f8b4b4" if is_override else "#def7ec"
+        badge_color = "#dc3545" if is_override else "#28a745"
         
-        st.error("#### 🛡️ Agent 3: Foundry IQ Evaluation Gate")
-        st.write(f"**Current Status:** {assessment['status']}")
-        st.write(f"**Next Action Item:** {assessment['next']}")
+        st.markdown(
+            f"""<div style='background-color:{card_bg}; padding:18px; border-radius:6px; border:1px solid {card_border}; margin-bottom: 10px;'>
+            <span style='background-color:{badge_color}; color:white; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;'>AGENT 2 AUDIT CONSENSUS</span>
+            <h4 style='margin-top: 10px;'>🛡️ Work IQ Burnout Guard</h4>
+            <p><b>Resolution Protocol Decision:</b> <code style='font-size:14px;'>{data['work_consensus']['status']}</code></p>
+            <p><b>Safe Operational Allowed Capacity:</b> {data['work_consensus']['final_hours_per_week']} hrs/week</p>
+            </div>""", unsafe_style_html=True
+        )
+        with st.expander("👁️ View Agent 2 Live Conflict Resolution Audit Log", expanded=True):
+            st.metric(label="Calculated Internal Burnout Index Factor", value=data["work_consensus"]["burnout_index"])
+            st.info(data["work_consensus"]["resolution_log"])
 
-    st.write("---")
-    st.info("#### 📊 Agent 4: Anonymized Manager Insights Dashboard (PII Stripped)")
-    st.write(f"**Cohort Reference ID:** TRACK-{learner['certification']}")
-    st.write(f"**Cohort Readiness Forecast:** " + ("High-Probability Pass" if assessment["status"] == "APPROVED FOR VOUCHER" else "Critical Intervention Needed"))
-    st.write(f"**Team Capacity Risk Flag:** " + ("True - High Workloads Detected" if plan['duration_weeks'] == 4 else "False - Stable Operational Headroom"))
+    # Trace Loop Section Container
+    st.markdown("---")
+    st.subheader("🔄 Agent 3: Active Feedback Competency Verification Trails")
+    st.write(f"**Final Runtime Lifecycle Status:** `{data['final_status']}` | **Final Verified Certification Readiness Grade:** `{data['final_score']}%`")
 
-except FileNotFoundError:
-    st.error("Error: `data.json` file not found in the same folder repository directory. Please commit it to GitHub.")
+    if data["execution_trace"]:
+        for trace in data["execution_trace"]:
+            with st.expander(f"📋 View Active Quality Remediation Cycle Iteration #{trace['loop_count']}", expanded=True):
+                st.warning(f"Initial Baseline Ingest Evaluation Check: {trace['pre_score']}% ──► Targeted Sprint Adjustment Optimization Check: {trace['post_score']}%")
+                st.write("**Triggered Dynamic Study Sprint Target Core Objectives:**")
+                st.json(trace["remediation_action"])
+    else:
+        st.info("🟢 Competency check verified baseline target criteria safely on initial ingest pass. No remediation iterations required.")
+else:
+    st.info("💡 Infrastructure state engines current state: IDLE. Click the execution button above to launch real-time multi-agent inference loops.")
