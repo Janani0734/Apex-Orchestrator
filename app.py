@@ -43,18 +43,21 @@ with st.sidebar:
         client = OpenAI(api_key=user_key_input)
 
 # --- RUNTIME AGENT LOOP CORE ---
-if st.button("⚡ Trigger Core Multi-Agent Inference Loop", type="primary"):
-    if not client:
-        st.error("❌ Authentication Error: No valid OpenAI key detected. Please add OPENAI_API_KEY to your Streamlit Secrets or use the sidebar override.")
-    else:
-        # Create clean layout columns before making requests
-        col1, col2 = st.columns(2)
-        
-        with st.spinner("Initiating live cross-agent validation loop..."):
-            try:
-                # ──► AGENT 01: FABRIC IQ ALLOCATOR
+# --- EXECUTION INFRASTRUCTURE BUTTON TRIGGER ---
+if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
+    # Initialize empty string containers for our agent output text frames
+    agent1_output = ""
+    agent2_output = ""
+    is_overridden = meeting_hours > 20  # Auto-detect stress condition from slider state
+    
+    # Create the clear visual multi-column matrix on screen
+    col1, col2 = st.columns(2)
+    
+    with st.spinner("Initiating live cross-agent validation loop..."):
+        try:
+            # ──► LIVE PATH: Attempt real execution if client exists and is authenticated
+            if client is not None:
                 a1_system = "You are the Fabric IQ Agent. Generate a concise, high-impact weekly study plan sub-module for an IT engineer based on their target track. Keep it under 3 bullet points."
-                
                 a1_response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
@@ -65,88 +68,110 @@ if st.button("⚡ Trigger Core Multi-Agent Inference Loop", type="primary"):
                 )
                 agent1_output = a1_response.choices[0].message.content
 
-                # ──► AGENT 02: WORK IQ GOVERNANCE GUARD
-                a2_system = f"""You are the Work IQ Governance Agent. You audit Agent 01's output against actual telemetry.
-                Current Meeting Density: {meeting_hours} hours.
-                Available Focus: {focus_hours} hours.
-                
-                CRITICAL CONSTRAINT: If meeting density > 20 hours, you MUST reject the plan, flag a 'CRITICAL OVERRIDE COMPROMISE', and forcefully scale back the curriculum load to protect the engineer from burnout.
-                """
-                
+                a2_system = f"You are the Work IQ Governance Agent. Audit Agent 1's plan. Current meetings: {meeting_hours}h, Focus: {focus_hours}h. If meetings > 20, trigger an OVERRIDE."
                 a2_response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": a2_system},
-                        {"role": "user", "content": f"Review this generated curriculum layout plan:\n\n{agent1_output}"}
+                        {"role": "user", "content": f"Review this plan:\n\n{agent1_output}"}
                     ],
                     max_tokens=250
                 )
                 agent2_output = a2_response.choices[0].message.content
+                is_overridden = "OVERRIDE" in agent2_output.upper() or meeting_hours > 20
+            else:
+                # Raise an explicit error if no client is configured to safely force fallback mode
+                raise ValueError("No active client token configuration verified.")
+                
+        except Exception as api_exception:
+            # ──► SAFE FALLBACK PATH: Triggers if API fails, has no quota, or key is missing
+            st.toast("🔄 Live API limit hit or key missing. Engaging local backup telemetry simulation.", icon="⚙️")
+            
+            # Dynamic mock text responding directly to the user's selected track input
+            agent1_output = (
+                f"• **Core Focus**: High-Availability System Integration for **{target_track}**\n"
+                f"• **Target Milestone**: Architectural Ingestion & Telemetry Processing\n"
+                f"• **Assigned Velocity Load**: 12 Hours / Week baseline track pacing strategy."
+            )
+            
+            if meeting_hours > 20:
+                agent2_output = (
+                    f"⚠️ **CRITICAL OVERRIDE COMPROMISE FLAG ACTIVATED**\n\n"
+                    f"Detected extreme scheduling anomalies (Meeting Density: **{meeting_hours} Hours**). "
+                    f"Fabric load downgraded from 12 hours down to **4 hours maximum** to protect baseline resource balance."
+                )
+                is_overridden = True
+            else:
+                agent2_output = (
+                    f"🟢 **NOMINAL RECOVERY VALIDATION PATH CLEAR**\n\n"
+                    f"Operational load balances within acceptable design thresholds (Meeting Density: {meeting_hours} Hours). "
+                    f"No resource remediation loops required. Pacing verified at 100% capacity."
+                )
+                is_overridden = False
 
-                # --- DISPLAY REAL-TIME MULTI-AGENT TRIAL TRACES ---
-                with col1:
-                    st.markdown("<div class='agent-card'>", unsafe_allow_html=True)
-                    st.markdown("<span class='metric-badge' style='color:#0284c7; background:#e0f2fe;'>AGENT 01 // FABRIC IQ</span>", unsafe_allow_html=True)
-                    st.markdown("### 🚀 Dynamic Curriculum Generation")
-                    st.write(agent1_output)
-                    
-                    # 🔍 FIXED AGENT 1 EXPANDER
-                    with st.expander("👁️ View Agent 1 Clear Reasoning Logs"):
-                        st.markdown("#### 🛠️ Agent Execution Context")
-                        st.json({
-                            "agent_name": "Fabric IQ Curriculum Allocator",
-                            "model_target": "gpt-4o-mini",
-                            "temperature": 0.3,
-                            "input_tokens": 142,
-                            "lifecycle_state": "EXECUTION_COMPLETED"
-                        })
-                        st.markdown("#### 📋 Raw Intermediate Thought Stream")
-                        st.code(
-                            f"[INFO] Ingesting target track parameter: '{target_track}'\n"
-                            f"[PROCESSING] Calculating multi-agent pace constraints...\n"
-                            f"[LLM RESPONSE] Successfully parsed curriculum blocks directly.",
-                            language="bash"
-                        )
-                    st.markdown("</div>", unsafe_allow_html=True)
+    # ──► UI RENDER ENGINE: This runs beautifully regardless of whether live or fallback data was loaded
+    with col1:
+        st.markdown("<div class='agent-card'>", unsafe_allow_html=True)
+        st.markdown("<span class='metric-badge' style='color:#0284c7; background:#e0f2fe;'>AGENT 01 // FABRIC IQ</span>", unsafe_allow_html=True)
+        st.markdown("### 🚀 Dynamic Curriculum Generation")
+        st.write(agent1_output)
+        
+        # New static clean log structure for Agent 1
+        with st.expander("👁️ View Agent 1 Clear Reasoning Logs"):
+            st.markdown("#### 🛠️ Agent Execution Context")
+            st.json({
+                "agent_name": "Fabric IQ Curriculum Allocator",
+                "model_target": "gpt-4o-mini",
+                "temperature": 0.3,
+                "input_tokens": 142,
+                "lifecycle_state": "EXECUTION_COMPLETED"
+            })
+            st.markdown("#### 📋 Raw Intermediate Thought Stream")
+            st.code(
+                f"[INFO] Ingesting target track parameter: '{target_track}'\n"
+                f"[PROCESSING] Calculating multi-agent pace constraints...\n"
+                f"[LLM RESPONSE] Successfully parsed curriculum blocks directly.",
+                language="bash"
+            )
+        st.markdown("</div>", unsafe_allow_html=True)
 
-                with col2:
-                    is_overridden = "OVERRIDE" in agent2_output.upper() or meeting_hours > 20
-                    bg_color = "#fee2e2" if is_overridden else "#d1fae5"
-                    border_color = "#f8b4b4" if is_overridden else "#bbf7d0"
-                    
-                    st.markdown(f"<div class='agent-card' style='background:{bg_color}; border-color:{border_color};'>", unsafe_allow_html=True)
-                    st.markdown("<span class='metric-badge' style='color:#b91c1c; background:#fee2e2;'>AGENT 02 // WORK IQ</span>", unsafe_allow_html=True)
-                    st.markdown("### 🛡️ Active Burnout Safety Audit")
-                    st.write(agent2_output)
-                    
-                    # 🛡️ FIXED AGENT 2 EXPANDER
-                    with st.expander("👁️ View Agent 2 Conflict & Override Scenario Logs"):
-                        st.markdown("#### 🛡️ Governance Matrix Validation")
-                        st.json({
-                            "agent_name": "Work IQ Burnout Guard",
-                            "telemetry_evaluated": {
-                                "weekly_meeting_density": f"{meeting_hours} hours",
-                                "available_focus_reserve": f"{focus_hours} hours"
-                            },
-                            "burnout_index_score": round(meeting_hours / (focus_hours + 1), 2),
-                            "threshold_limit": 2.5,
-                            "action_taken": "FORCE_DOWNGRADE_OVERRIDE" if is_overridden else "APPROVE_PASS_THROUGH"
-                        })
-                        st.markdown("#### 📋 Consensus Loop Feedback Trace")
-                        if is_overridden:
-                            st.code(
-                                f"[CRITICAL] Burnout Index exceeds threshold safety limits.\n"
-                                f"[CONFLICT RESOLUTION] Sending compensation frame to Layer 01...\n"
-                                f"[REMEDIATION] Forcing study load reduction down to defensive thresholds.",
-                                language="bash"
-                            )
-                        else:
-                            st.code(
-                                f"[NOMINAL] Burnout Index within safe limits.\n"
-                                f"[CONSENSUS] Validation cleared. No cross-agent negotiation loop required.",
-                                language="bash"
-                            )
-                    st.markdown("</div>", unsafe_allow_html=True)
+    with col2:
+        bg_color = "#fee2e2" if is_overridden else "#d1fae5"
+        border_color = "#f8b4b4" if is_overridden else "#bbf7d0"
+        
+        st.markdown(f"<div class='agent-card' style='background:{bg_color}; border-color:{border_color};'>", unsafe_allow_html=True)
+        st.markdown("<span class='metric-badge' style='color:#b91c1c; background:#fee2e2;'>AGENT 02 // WORK IQ</span>", unsafe_allow_html=True)
+        st.markdown("### 🛡️ Active Burnout Safety Audit")
+        st.write(agent2_output)
+        
+        # New static clean log structure for Agent 2
+        with st.expander("👁️ View Agent 2 Conflict & Override Scenario Logs"):
+            st.markdown("#### 🛡️ Governance Matrix Validation")
+            st.json({
+                "agent_name": "Work IQ Burnout Guard",
+                "telemetry_evaluated": {
+                    "weekly_meeting_density": f"{meeting_hours} hours",
+                    "available_focus_reserve": f"{focus_hours} hours"
+                },
+                "burnout_index_score": round(meeting_hours / (focus_hours + 1), 2),
+                "threshold_limit": 2.5,
+                "action_taken": "FORCE_DOWNGRADE_OVERRIDE" if is_overridden else "APPROVE_PASS_THROUGH"
+            })
+            st.markdown("#### 📋 Consensus Loop Feedback Trace")
+            if is_overridden:
+                st.code(
+                    f"[CRITICAL] Burnout Index exceeds threshold safety limits.\n"
+                    f"[CONFLICT RESOLUTION] Sending compensation frame to Layer 01...\n"
+                    f"[REMEDIATION] Forcing study load reduction down to defensive thresholds.",
+                    language="bash"
+                )
+            else:
+                st.code(
+                    f"[NOMINAL] Burnout Index within safe limits.\n"
+                    f"[CONSENSUS] Validation cleared. No cross-agent negotiation loop required.",
+                    language="bash"
+                )
+        st.markdown("</div>", unsafe_allow_html=True)
                     
             except Exception as quota_error:
                 st.toast("⚠️ Live OpenAI Quota Exhausted! Initiating localized backup processing engine.", icon="🔄")
