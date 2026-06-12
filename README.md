@@ -6,9 +6,9 @@
 [![Model](https://img.shields.io/badge/LLM-LLaMA_3.1_via_Groq-f97316?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Tests](https://img.shields.io/badge/Tests-Pytest_Suite-22c55e?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 
-> **The Problem**: Developers suffer cognitive overload balancing mandatory certifications with heavy operational workloads — leading to burnout, failed exams, and lost productivity.
+> **The Problem**: Developers suffer cognitive overload balancing mandatory certifications with heavy operational workloads leading to burnout, failed exams, and lost productivity.
 >
-> **The Solution**: An autonomous 4-agent system that dynamically re-orchestrates learning paths based on real-time bandwidth signals — while actively protecting developers from burnout.
+> **The Solution**: An autonomous 4-agent system that dynamically re-orchestrates learning paths based on real-time bandwidth signals while actively protecting developers from burnout.
 
 ---
 
@@ -182,11 +182,11 @@ uvicorn main:app --reload
 
 ## 🔐 Responsible AI & Data
 
-- ✅ **Synthetic data only** — all learner IDs are fictional (L-1001, L-1002)
-- ✅ **PII stripped at edge** — Manager Insights never exposes individual identifiers
-- ✅ **Prompt injection guard** — adversarial inputs neutralized before model contact
-- ✅ **Graceful fallback** — system degrades safely when API unavailable
-- ✅ **No credentials in repo** — all secrets via environment variables
+- ✅ **Synthetic data only** - all learner IDs are fictional (L-1001, L-1002)
+- ✅ **PII stripped at edge** - Manager Insights never exposes individual identifiers
+- ✅ **Prompt injection guard** - adversarial inputs neutralized before model contact
+- ✅ **Graceful fallback** - system degrades safely when API unavailable
+- ✅ **No credentials in repo** - all secrets via environment variables
 
 ---
 
