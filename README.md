@@ -85,9 +85,9 @@ All three Microsoft IQ intelligence layers are integrated as distinct agent pers
 
 | IQ Layer | Agent Role | What It Does |
 |---|---|---|
-| **Fabric IQ** | Study Planner | Knowledge retrieval layer — maps certifications to skills, generates grounded curriculum |
-| **Work IQ** | Engagement Router | Work context layer — reads meeting density & focus signals to protect deep-work zones |
-| **Foundry IQ** | Evaluation Gate | Grounded assessment layer — generates cited practice questions, enforces pass threshold |
+| **Fabric IQ** | Study Planner | Knowledge retrieval layer - maps certifications to skills, generates grounded curriculum |
+| **Work IQ** | Engagement Router | Work context layer - reads meeting density & focus signals to protect deep-work zones |
+| **Foundry IQ** | Evaluation Gate | Grounded assessment layer - generates cited practice questions, enforces pass threshold |
 
 ---
 
@@ -180,18 +180,6 @@ uvicorn main:app --reload
 
 ---
 
-## 🏆 Judging Rubric Alignment
-
-| Criterion | Weight | What We Demonstrate |
-|---|---|---|
-| **Accuracy & Relevance** | 25% | Directly solves enterprise upskilling + burnout — real problem, real solution |
-| **Reasoning & Multi-step** | 25% | 4 agents with visible reasoning traces, conflict resolution, remediation loops |
-| **Reliability & Safety** | 20% | Pydantic v2 injection guard, synthetic data only, Pytest suite, fallback mode |
-| **Creativity & Originality** | 15% | Burnout guard as a first-class agent — novel framing of enterprise learning |
-| **UX & Presentation** | 15% | Live deployed app, interactive sliders, color-coded agent cards, orchestration flow |
-
----
-
 ## 🔐 Responsible AI & Data
 
 - ✅ **Synthetic data only** — all learner IDs are fictional (L-1001, L-1002)
@@ -204,8 +192,8 @@ uvicorn main:app --reload
 
 ## 👩‍💻 About the Builder
 
-Built solo by **Janani R**, B.Tech Information Technology (2026), KPR Institute of Engineering and Technology, Coimbatore.
+Built solo by **Janani R**, B.Tech Information Technology (2026)
 
-Co-inventor on Government of India Patent No. 202641043122 A — edge-cloud AI/IoT system.
 
-*This project was built entirely during the Agents League Hackathon (June 4–14, 2026).*
+
+
