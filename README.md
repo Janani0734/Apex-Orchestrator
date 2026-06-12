@@ -50,7 +50,7 @@ Rather than a single LLM call, Apex-Orchestrator routes every learner signal thr
          │
          └─── score < 75% ──► REMEDIATION LOOP
                                     │
-📊 Agent 4: Manager Insights        │
+📊 Agent 4: Manager Insights       │
    └── PII stripped at edge         │
    └── Cohort readiness forecast    │
    └── Capacity risk → leadership   │
