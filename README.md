@@ -35,25 +35,29 @@ Rather than a single LLM call, Apex-Orchestrator routes every learner signal thr
    └── Generates modular curriculum timeline
          │
          ▼
-⚡ Agent 2: Work IQ Engagement Router  ◄─── CONFLICT RESOLVER
+⚡ Agent 2: Work IQ Engagement Router  ◄── CONFLICT RESOLVER
    └── Computes burnout_index = meetings / focus_hours
-   └── If burnout_index > 2.0 → OVERRIDE Agent 1's plan
-   └── Downgrades velocity, shifts to protective comms mode
+   └── If burnout_index > 2.0 → OVERRIDE Agent 1 plan
+   └── Downgrades velocity, protective comms mode
          │
          ▼
 🛡️ Agent 3: Foundry IQ Evaluation Gate
    └── Hard gate at ≥75% practice average
    └── Generates grounded practice questions
-   └── Issues exam voucher OR triggers remediation loop
+   └── Issues exam voucher OR triggers remediation
          │
-         ▼ (if score < 75%) ──────────────────────┐
-📊 Agent 4: Manager Insights Dashboard            │
-   └── PII stripped at edge (employee_id → cohort_ref) │
-   └── Cohort readiness forecast                  │
-   └── Team capacity risk flags → leadership      │
-         │                                         │
-         ▼                                         │
-[ System Output ]         Remediation Loop ────────┘
+         ├─── score ≥ 75% ──► VOUCHER APPROVED
+         │
+         └─── score < 75% ──► REMEDIATION LOOP
+                                    │
+📊 Agent 4: Manager Insights        │
+   └── PII stripped at edge         │
+   └── Cohort readiness forecast    │
+   └── Capacity risk → leadership   │
+         │                          │
+         ▼                          │
+[ System Output ] ◄─────────────────┘
+
 ```
 
 ---
