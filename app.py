@@ -22,8 +22,6 @@ st.markdown("""
 
 # --- HEADER ---
 st.markdown("<h1 style='margin:0;'>⚙️ Apex-Orchestrator Control Console</h1>", unsafe_allow_html=True)
-st.markdown("<p style='color:#64748b; font-size:15px;'>Live Multi-Agent Autonomous Communication Mesh · Powered by LLaMA-3.1 via Groq</p>", unsafe_allow_html=True)
-st.markdown("---")
 
 # --- SIDEBAR (must come before client init) ---
 with st.sidebar:
@@ -34,6 +32,11 @@ with st.sidebar:
     practice_score = st.slider("Practice Exam Score (%)", 0, 100, 67)
     st.markdown("---")
     st.markdown("### 🔑 Live Credential Override")
+    st.markdown("**Option A — Azure AI Foundry (recommended)**")
+    azure_endpoint_input = st.text_input("Azure OpenAI Endpoint:", placeholder="https://YOUR-RESOURCE.openai.azure.com/")
+    azure_key_input      = st.text_input("Azure API Key:", type="password")
+    azure_deployment     = st.text_input("Deployment Name:", value="gpt-4o-mini")
+    st.markdown("**Option B — Groq (fallback)**")
     user_key_input = st.text_input("Paste Groq API Key:", type="password")
     st.markdown("---")
     st.markdown("**Microsoft IQ Layers:**")
@@ -42,33 +45,68 @@ with st.sidebar:
     st.error("🛡️ Foundry IQ — Eval Gate")
     st.info("📊 Manager Insights")
 
-# --- API KEY RESOLUTION ---
-api_key = ""
-if user_key_input and len(user_key_input) > 10:
-    api_key = user_key_input
-else:
-    try:
-        api_key = st.secrets.get("GROQ_API_KEY", "")
-    except Exception:
-        pass
-    if not api_key:
-        api_key = os.getenv("GROQ_API_KEY", "")
+# --- API KEY RESOLUTION (Azure takes priority over Groq) ---
+client       = None
+MODEL        = "llama-3.1-8b-instant"
+backend_label = "Groq LLaMA-3.1"
+using_azure  = False
 
-# --- CLIENT INIT ---
-client = None
-if api_key:
+# 1. Try Azure AI Foundry (sidebar input)
+_az_endpoint = azure_endpoint_input.strip() if azure_endpoint_input else ""
+_az_key      = azure_key_input.strip()      if azure_key_input      else ""
+if not _az_endpoint:
+    try: _az_endpoint = st.secrets.get("AZURE_OPENAI_ENDPOINT", "")
+    except Exception: pass
+if not _az_endpoint: _az_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "")
+if not _az_key:
+    try: _az_key = st.secrets.get("AZURE_OPENAI_KEY", "")
+    except Exception: pass
+if not _az_key: _az_key = os.getenv("AZURE_OPENAI_KEY", "")
+
+if _az_endpoint and _az_key:
     try:
-        client = OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
+        from openai import AzureOpenAI
+        _dep = azure_deployment.strip() if azure_deployment.strip() else os.getenv("AZURE_DEPLOYMENT", "gpt-4o-mini")
+        client = AzureOpenAI(
+            azure_endpoint=_az_endpoint,
+            api_key=_az_key,
+            api_version="2024-02-01"
+        )
+        MODEL         = _dep
+        backend_label = f"Azure AI Foundry · {_dep}"
+        using_azure   = True
     except Exception as e:
-        st.error(f"Client Error: {e}")
+        st.error(f"Azure client error: {e}")
 
-MODEL = "llama-3.1-8b-instant"
+# 2. Fallback: Groq
+if not client:
+    _groq_key = ""
+    if user_key_input and len(user_key_input) > 10:
+        _groq_key = user_key_input
+    else:
+        try: _groq_key = st.secrets.get("GROQ_API_KEY", "")
+        except Exception: pass
+        if not _groq_key: _groq_key = os.getenv("GROQ_API_KEY", "")
+    if _groq_key:
+        try:
+            client = OpenAI(api_key=_groq_key, base_url="https://api.groq.com/openai/v1")
+        except Exception as e:
+            st.error(f"Groq client error: {e}")
+
+st.markdown(
+    f"<p style='color:#64748b; font-size:15px;'>Live Multi-Agent Autonomous Communication Mesh · "
+    f"{'🟦 <strong>Azure AI Foundry</strong>' if using_azure else 'Powered by LLaMA-3.1 via Groq'}</p>",
+    unsafe_allow_html=True
+)
+st.markdown("---")
 
 # --- STATUS BANNER ---
-if client:
+if using_azure:
+    st.success(f"🟦 Azure AI Foundry Connected — {MODEL}. Adjust sliders and click Execute.")
+elif client:
     st.success("✅ Live LLM Connected — Groq LLaMA-3.1 active. Adjust sliders and click Execute.")
 else:
-    st.warning("⚠️ Running in simulation mode. Add your Groq API key in sidebar to enable live LLM reasoning.")
+    st.warning("⚠️ Running in simulation mode. Add Azure AI Foundry or Groq credentials in sidebar.")
 
 # --- MAIN EXECUTION BUTTON ---
 if st.button("⚡ Execute Infrastructure Inference Loop", type="primary", use_container_width=False):
@@ -232,8 +270,9 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary", use_co
             is_fallback = True
             st.toast(f"⚙️ Simulation mode: {str(e)[:60]}", icon="🔄")
 
+            _cert = target_track.split(":")[0].strip()
             agent1_output = (
-                f"• **Core Focus**: AZ-204 Developer Track — Azure Functions, API Management, Storage\n"
+                f"• **Core Focus**: {_cert} Developer Track — Azure Functions, API Management, Storage\n"
                 f"• **Weekly Allocation**: {max(2, focus_hours - 2)}h/week across {4 if meeting_hours > 20 else 3} weeks\n"
                 f"• **Priority Modules**: Azure App Service → Cosmos DB → Azure Monitor\n"
                 f"• **Milestone**: Practice test checkpoint at Week 2"
@@ -267,7 +306,7 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary", use_co
             )
             gate_status = "VOUCHER_APPROVED" if practice_score >= 75 else "REMEDIATION_LOOP_TRIGGERED"
             agent3_output = (
-                f"Q: Which Azure service enables serverless event-driven compute?\n"
+                f"Q: Which Azure service is most relevant for {_cert} workloads?\n"
                 f"A) Azure VMs\nB) Azure Functions ✓\nC) Azure Batch\nD) Azure Container Instances\n\n"
                 f"Correct: B — Azure Functions provides serverless execution triggered by events."
             )
@@ -315,7 +354,7 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary", use_co
 
     st.markdown("---")
     st.markdown("### 🧠 Multi-Agent Reasoning Logs")
-    badge_type = "🟢 LIVE LLM" if not is_fallback else "🟡 SIMULATION"
+    badge_type = "🟦 AZURE FOUNDRY" if using_azure else ("🟢 LIVE GROQ" if not is_fallback else "🟡 SIMULATION")
 
     col1, col2 = st.columns(2)
 
