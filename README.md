@@ -4,11 +4,12 @@
 [![Track](https://img.shields.io/badge/Track-Reasoning_Agents-6366f1?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Microsoft IQ](https://img.shields.io/badge/Microsoft_IQ-Fabric_+_Work_+_Foundry-0078d4?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Model](https://img.shields.io/badge/LLM-LLaMA_3.1_via_Groq-f97316?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
+[![Azure](https://img.shields.io/badge/Azure_AI-Foundry_Ready-0078d4?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Tests](https://img.shields.io/badge/Tests-Pytest_Suite-22c55e?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 
-> **The Problem**: Developers suffer cognitive overload balancing mandatory certifications with heavy operational workloads leading to burnout, failed exams, and lost productivity.
+> **The Problem**: Developers suffer cognitive overload balancing mandatory certifications with heavy operational workloads — leading to burnout, failed exams, and lost productivity.
 >
-> **The Solution**: An autonomous 4-agent system that dynamically re-orchestrates learning paths based on real-time bandwidth signals while actively protecting developers from burnout.
+> **The Solution**: An autonomous 4-agent system that dynamically re-orchestrates learning paths based on real-time bandwidth signals — while actively protecting developers from burnout.
 
 ---
 
@@ -85,9 +86,9 @@ All three Microsoft IQ intelligence layers are integrated as distinct agent pers
 
 | IQ Layer | Agent Role | What It Does |
 |---|---|---|
-| **Fabric IQ** | Study Planner | Knowledge retrieval layer - maps certifications to skills, generates grounded curriculum |
-| **Work IQ** | Engagement Router | Work context layer - reads meeting density & focus signals to protect deep-work zones |
-| **Foundry IQ** | Evaluation Gate | Grounded assessment layer - generates cited practice questions, enforces pass threshold |
+| **Fabric IQ** | Study Planner | Knowledge retrieval layer — maps certifications to skills, generates grounded curriculum |
+| **Work IQ** | Engagement Router | Work context layer — reads meeting density & focus signals to protect deep-work zones |
+| **Foundry IQ** | Evaluation Gate | Grounded assessment layer — generates cited practice questions, enforces pass threshold |
 
 ---
 
@@ -157,8 +158,13 @@ git clone https://github.com/Janani0734/Apex-Orchestrator
 cd Apex-Orchestrator
 pip install -r requirements.txt
 
-# Add API key
-echo "GROQ_API_KEY=your_key_here" > .env
+# Add API keys (copy .env.example → .env)
+# Option A: Azure AI Foundry
+echo "AZURE_OPENAI_ENDPOINT=https://YOUR-RESOURCE.openai.azure.com/" >> .env
+echo "AZURE_OPENAI_KEY=your_azure_key" >> .env
+echo "AZURE_DEPLOYMENT=gpt-4o-mini" >> .env
+# Option B: Groq fallback
+echo "GROQ_API_KEY=your_key_here" >> .env
 
 # Run Streamlit dashboard
 streamlit run app.py
@@ -180,20 +186,42 @@ uvicorn main:app --reload
 
 ---
 
+## 🏆 Judging Rubric Alignment
+
+| Criterion | Weight | What We Demonstrate |
+|---|---|---|
+| **Accuracy & Relevance** | 20% | Directly solves enterprise upskilling + burnout — real problem, real solution |
+| **Reasoning & Multi-step** | 20% | 4 agents with visible reasoning traces, conflict resolution, remediation loops |
+| **Reliability & Safety** | 20% | Pydantic v2 injection guard, synthetic data only, Pytest suite, fallback mode |
+| **Creativity & Originality** | 15% | Burnout guard as a first-class agent — novel framing of enterprise learning |
+| **UX & Presentation** | 15% | Live deployed app, interactive sliders, color-coded agent cards, orchestration flow |
+| **Community Vote** | 10% | [Vote on Discord →](https://aka.ms/agentsleague/discord) |
+
+---
+
 ## 🔐 Responsible AI & Data
 
-- ✅ **Synthetic data only** - all learner IDs are fictional (L-1001, L-1002)
-- ✅ **PII stripped at edge** - Manager Insights never exposes individual identifiers
-- ✅ **Prompt injection guard** - adversarial inputs neutralized before model contact
-- ✅ **Graceful fallback** - system degrades safely when API unavailable
-- ✅ **No credentials in repo** - all secrets via environment variables
+- ✅ **Synthetic data only** — all learner IDs are fictional (L-1001, L-1002)
+- ✅ **PII stripped at edge** — Manager Insights never exposes individual identifiers
+- ✅ **Prompt injection guard** — adversarial inputs neutralized before model contact
+- ✅ **Graceful fallback** — system degrades safely when API unavailable
+- ✅ **No credentials in repo** — all secrets via environment variables
+- ✅ **Synthetic demo data** — `data/data.json` contains only fictional learner IDs (L-1001, L-1002); no real employee data is used anywhere in this system
+
+---
+
+## 🗳️ Community Vote
+
+If you find this project useful, **please vote for it on the Agents League Discord poll** — community vote counts for 10% of the final score.
+
+👉 **[Vote here → aka.ms/agentsleague/discord](https://aka.ms/agentsleague/discord)**
 
 ---
 
 ## 👩‍💻 About the Builder
 
-Built solo by **Janani R**, B.Tech Information Technology (2026)
+Built solo by **Janani R**, B.Tech Information Technology (2026), KPR Institute of Engineering and Technology, Coimbatore.
 
+Co-inventor on Government of India Patent No. 202641043122 A — edge-cloud AI/IoT system.
 
-
-
+*This project was built entirely during the Agents League Hackathon (June 4–14, 2026).*
