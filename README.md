@@ -186,18 +186,6 @@ uvicorn main:app --reload
 
 ---
 
-## 🏆 Judging Rubric Alignment
-
-| Criterion | Weight | What We Demonstrate |
-|---|---|---|
-| **Accuracy & Relevance** | 20% | Directly solves enterprise upskilling + burnout — real problem, real solution |
-| **Reasoning & Multi-step** | 20% | 4 agents with visible reasoning traces, conflict resolution, remediation loops |
-| **Reliability & Safety** | 20% | Pydantic v2 injection guard, synthetic data only, Pytest suite, fallback mode |
-| **Creativity & Originality** | 15% | Burnout guard as a first-class agent — novel framing of enterprise learning |
-| **UX & Presentation** | 15% | Live deployed app, interactive sliders, color-coded agent cards, orchestration flow |
-| **Community Vote** | 10% | [Vote on Discord →](https://aka.ms/agentsleague/discord) |
-
----
 
 ## 🔐 Responsible AI & Data
 
@@ -223,5 +211,7 @@ If you find this project useful, **please vote for it on the Agents League Disco
 Built solo by **Janani R**, B.Tech Information Technology (2026), KPR Institute of Engineering and Technology, Coimbatore.
 
 Co-inventor on Government of India Patent No. 202641043122 A — edge-cloud AI/IoT system.
+
+> *Watching developers around me struggle to balance certification deadlines with back-to-back meetings inspired this project — burnout shouldn't be the price of staying technically sharp.*
 
 *This project was built entirely during the Agents League Hackathon (June 4–14, 2026).*
