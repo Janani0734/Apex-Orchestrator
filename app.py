@@ -171,23 +171,34 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary", use_co
             a1_reasoning = a1_trace.choices[0].message.content
 
             # ── AGENT 2: WORK IQ ────────────────────────────────────────────
+            # Override decision is DETERMINISTIC math — never let the LLM decide this
+            is_overridden = meeting_hours > 20 or burnout_index > 2.0
+            if is_overridden:
+                a2_system = (
+                    "You are Agent 2 — Work IQ Burnout Guard in Apex-Orchestrator. "
+                    f"SYSTEM OVERRIDE CONFIRMED: burnout_index={burnout_index} > 2.0 threshold. "
+                    f"meeting_hours={meeting_hours}h > 20h safety limit. "
+                    "Start EXACTLY with: OVERRIDE ACTIVATED. "
+                    "Then explain what changes are forced on Agent 1 plan and protective actions taken. "
+                    "Under 150 words."
+                )
+            else:
+                a2_system = (
+                    "You are Agent 2 — Work IQ Burnout Guard in Apex-Orchestrator. "
+                    f"SYSTEM APPROVAL CONFIRMED: burnout_index={burnout_index} within safe limits. "
+                    f"meeting_hours={meeting_hours}h within 20h limit. "
+                    "Start EXACTLY with: PLAN APPROVED. "
+                    "Confirm the plan and note any minor risks to watch. Under 100 words."
+                )
             a2_resp = client.chat.completions.create(
                 model=MODEL,
                 messages=[
-                    {"role": "system", "content": (
-                        "You are Agent 2 — Work IQ Burnout Guard in Apex-Orchestrator. "
-                        f"Burnout index = meetings/focus = {burnout_index}. "
-                        f"meeting_hours={meeting_hours}, focus_hours={focus_hours}. "
-                        "If meetings > 20 OR burnout_index > 2.0, you MUST start with 'OVERRIDE ACTIVATED' "
-                        "and explain why you are overriding Agent 1's plan. "
-                        "If safe, start with 'PLAN APPROVED'. Keep under 150 words."
-                    )},
-                    {"role": "user", "content": f"Audit this Agent 1 plan:\n\n{agent1_output}"}
+                    {"role": "system", "content": a2_system},
+                    {"role": "user", "content": f"Agent 1 proposed plan:\n\n{agent1_output}"}
                 ],
                 max_tokens=200, temperature=0.3
             )
             agent2_output = a2_resp.choices[0].message.content
-            is_overridden = "OVERRIDE" in agent2_output.upper()
 
             a2_trace = client.chat.completions.create(
                 model=MODEL,
