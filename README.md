@@ -7,9 +7,9 @@
 [![Azure](https://img.shields.io/badge/Azure_AI-Foundry_Ready-0078d4?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Tests](https://img.shields.io/badge/Tests-Pytest_Suite-22c55e?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 
-> **The Problem**: Developers suffer cognitive overload balancing mandatory certifications with heavy operational workloads — leading to burnout, failed exams, and lost productivity.
+> **The Problem**: Developers suffer cognitive overload balancing mandatory certifications with heavy operational workloads, leading to burnout, failed exams, and lost productivity.
 >
-> **The Solution**: An autonomous 4-agent system that dynamically re-orchestrates learning paths based on real-time bandwidth signals — while actively protecting developers from burnout.
+> **The Solution**: An autonomous 4-agent system that dynamically re-orchestrates learning paths based on real-time bandwidth signals while actively protecting developers from burnout.
 
 ---
 
@@ -35,35 +35,25 @@ Rather than a single LLM call, Apex-Orchestrator routes every learner signal thr
    └── Generates modular curriculum timeline
          │
          ▼
-⚡ Agent 2: Work IQ Engagement Router  ◄── CONFLICT RESOLVER
+⚡ Agent 2: Work IQ Engagement Router  ◄─── CONFLICT RESOLVER
    └── Computes burnout_index = meetings / focus_hours
-   └── If burnout_index > 2.0 → OVERRIDE Agent 1 plan
-   └── Downgrades velocity, protective comms mode
+   └── If burnout_index > 2.0 → OVERRIDE Agent 1's plan
+   └── Downgrades velocity, shifts to protective comms mode
          │
          ▼
 🛡️ Agent 3: Foundry IQ Evaluation Gate
    └── Hard gate at ≥75% practice average
    └── Generates grounded practice questions
-   └── Issues exam voucher OR triggers remediation
-
-         ├── score ≥ 75% ──► VOUCHER APPROVED
+   └── Issues exam voucher OR triggers remediation loop
          │
-         └── score < 75% ──► REMEDIATION LOOP
-                                    │
-                                    ▼
-                         Back to Study Planner
-                                    │
-                                    ▼
-
-📊 Agent 4: Manager Insights
-   └── PII stripped at edge
-   └── Cohort readiness forecast
-   └── Capacity risk → leadership
-
-         │
-         ▼
-
-[ System Output ]
+         ▼ (if score < 75%) ──────────────────────┐
+📊 Agent 4: Manager Insights Dashboard            │
+   └── PII stripped at edge (employee_id → cohort_ref) │
+   └── Cohort readiness forecast                  │
+   └── Team capacity risk flags → leadership      │
+         │                                         │
+         ▼                                         │
+[ System Output ]         Remediation Loop ────────┘
 ```
 
 ---
@@ -96,9 +86,9 @@ All three Microsoft IQ intelligence layers are integrated as distinct agent pers
 
 | IQ Layer | Agent Role | What It Does |
 |---|---|---|
-| **Fabric IQ** | Study Planner | Knowledge retrieval layer — maps certifications to skills, generates grounded curriculum |
-| **Work IQ** | Engagement Router | Work context layer — reads meeting density & focus signals to protect deep-work zones |
-| **Foundry IQ** | Evaluation Gate | Grounded assessment layer — generates cited practice questions, enforces pass threshold |
+| **Fabric IQ** | Study Planner | Knowledge retrieval layer - maps certifications to skills, generates grounded curriculum |
+| **Work IQ** | Engagement Router | Work context layer - reads meeting density & focus signals to protect deep-work zones |
+| **Foundry IQ** | Evaluation Gate | Grounded assessment layer - generates cited practice questions, enforces pass threshold |
 
 ---
 
@@ -196,21 +186,20 @@ uvicorn main:app --reload
 
 ---
 
-
 ## 🔐 Responsible AI & Data
 
-- ✅ **Synthetic data only** — all learner IDs are fictional (L-1001, L-1002)
-- ✅ **PII stripped at edge** — Manager Insights never exposes individual identifiers
-- ✅ **Prompt injection guard** — adversarial inputs neutralized before model contact
-- ✅ **Graceful fallback** — system degrades safely when API unavailable
-- ✅ **No credentials in repo** — all secrets via environment variables
-- ✅ **Synthetic demo data** — `data/data.json` contains only fictional learner IDs (L-1001, L-1002); no real employee data is used anywhere in this system
+- ✅ **Synthetic data only** - all learner IDs are fictional (L-1001, L-1002)
+- ✅ **PII stripped at edge** - Manager Insights never exposes individual identifiers
+- ✅ **Prompt injection guard** - adversarial inputs neutralized before model contact
+- ✅ **Graceful fallback** - system degrades safely when API unavailable
+- ✅ **No credentials in repo** - all secrets via environment variables
+- ✅ **Synthetic demo data** - `data/data.json` contains only fictional learner IDs (L-1001, L-1002); no real employee data is used anywhere in this system
 
 ---
 
 ## 🗳️ Community Vote
 
-If you find this project useful, **please vote for it on the Agents League Discord poll** — community vote counts for 10% of the final score.
+If you find this project useful, **please vote for it on the Agents League Discord poll** 
 
 👉 **[Vote here → aka.ms/agentsleague/discord](https://aka.ms/agentsleague/discord)**
 
@@ -218,10 +207,9 @@ If you find this project useful, **please vote for it on the Agents League Disco
 
 ## 👩‍💻 About the Builder
 
-Built solo by **Janani R**, B.Tech Information Technology (2026), KPR Institute of Engineering and Technology, Coimbatore.
+Built by **Janani R**, B.Tech Information Technology (2026), KPR Institute of Engineering and Technology, Coimbatore.
 
-Co-inventor on Government of India Patent No. 202641043122 A — edge-cloud AI/IoT system.
+Co-inventor on Government of India Patent No. 202641043122 A - edge-cloud AI/IoT system.
 
 > *Watching developers around me struggle to balance certification deadlines with back-to-back meetings inspired this project — burnout shouldn't be the price of staying technically sharp.*
 
-*This project was built entirely during the Agents League Hackathon (June 4–14, 2026).*
