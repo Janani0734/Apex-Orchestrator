@@ -45,19 +45,25 @@ Rather than a single LLM call, Apex-Orchestrator routes every learner signal thr
    └── Hard gate at ≥75% practice average
    └── Generates grounded practice questions
    └── Issues exam voucher OR triggers remediation
-         │
-         ├─── score ≥ 75% ──► VOUCHER APPROVED
-         │
-         └─── score < 75% ──► REMEDIATION LOOP
-                                    │
-📊 Agent 4: Manager Insights       │
-   └── PII stripped at edge         │
-   └── Cohort readiness forecast    │
-   └── Capacity risk → leadership   │
-         │                          │
-         ▼                          │
-[ System Output ] ◄─────────────────┘
 
+         ├── score ≥ 75% ──► VOUCHER APPROVED
+         │
+         └── score < 75% ──► REMEDIATION LOOP
+                                    │
+                                    ▼
+                         Back to Study Planner
+                                    │
+                                    ▼
+
+📊 Agent 4: Manager Insights
+   └── PII stripped at edge
+   └── Cohort readiness forecast
+   └── Capacity risk → leadership
+
+         │
+         ▼
+
+[ System Output ]
 ```
 
 ---
