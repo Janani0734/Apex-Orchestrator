@@ -15,7 +15,7 @@
 
 ## 🎬 Demo Video
 
-▶️ **[Watch the full demo →](https://youtu.be/uLHIZ8jNALo)** *(walkthrough of all 4 agents + override scenario)*
+▶️ **[Watch the full demo →](https://youtu.be/uLHIZ8jNALo)** *(2 min walkthrough of all 4 agents + override scenario)*
 
 🔴 **[Live App →](https://apex-orchestrator-ensn6hvxntxquaothjjaxv.streamlit.app/)**
 
@@ -26,8 +26,6 @@
 Rather than a single LLM call, Apex-Orchestrator routes every learner signal through a **4-stage autonomous reasoning pipeline** with real inter-agent conflict resolution:
 
 ```
-st.markdown("""
-<div style="font-family: 'Courier New', Courier, monospace; line-height: 1.0; white-space: pre;">
 [ Live Telemetry Signal ]
           │
           ▼
@@ -39,25 +37,23 @@ st.markdown("""
           ▼
 ⚡ Agent 2: Work IQ Engagement Router  ◄─── CONFLICT RESOLVER
    └── Computes burnout_index = meetings / focus_hours
-   └── If burnout_index > 2.0 → OVERRIDE Agent 1's plan
-   └── Downgrades velocity, shifts to protective comms mode
+   └── If burnout_index > 2.0 → OVERRIDE Agent 1 plan
+   └── Downgrades velocity, protective comms mode
           │
-          ▼
 🛡️ Agent 3: Foundry IQ Evaluation Gate
    └── Hard gate at ≥75% practice average
    └── Generates grounded practice questions
-   └── Issues exam voucher OR triggers remediation loop
+   └── Issues exam voucher OR triggers remediation
           │
-          ▼ (if score < 75%) ──────────────────────┐
-📊 Agent 4: Manager Insights Dashboard             │
-   └── PII stripped at edge (cohort_ref)           │
-   └── Cohort readiness forecast                   │
-   └── Team capacity risk flags → leadership       │
-          │                                        │
-          ▼                                        │
-[ System Output ]         Remediation Loop ────────┘
-</div>
-""", unsafe_allow_html=True)
+          ├─── score ≥ 75% ──► VOUCHER APPROVED
+          └─── score < 75% ──► REMEDIATION LOOP
+                                    │
+📊 Agent 4: Manager Insights        │
+   └── PII stripped at edge         │
+   └── Cohort readiness forecast    │
+   └── Capacity risk → leadership   │
+          ▼                         │
+[ System Output ] ◄─────────────────┘
 ```
 
 ---
