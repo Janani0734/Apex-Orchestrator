@@ -182,7 +182,11 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
 
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown(f"<div class='{'agent-card-green' if not is_overridden else 'agent-card'}'>", unsafe_allow_html=True)
+        if is_overridden:
+            card1 = "agent-card"
+        else:
+            card1 = "agent-card-green"
+        st.markdown(f"<div class='{card1}'>", unsafe_allow_html=True)
         st.markdown(f"{badge(a1_src)} &nbsp; <strong>AGENT 01 // FABRIC IQ STUDY PLANNER</strong>", unsafe_allow_html=True)
         st.markdown("#### 🚀 Dynamic Curriculum Generation")
         st.write(a1_out)
@@ -192,7 +196,11 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
             st.json({"agent":"Fabric IQ","provider":a1_src,"model":AZURE_MODEL if a1_src=="AZURE_FOUNDRY" else GROQ_MODEL,"endpoint":AZURE_ENDPOINT if a1_src=="AZURE_FOUNDRY" else "groq.com","status":"EXECUTION_COMPLETED"})
 
     with c2:
-        st.markdown(f"<div class='{'agent-card-red' if is_overridden else 'agent-card-green'}'>", unsafe_allow_html=True)
+        if is_overridden:
+            card2 = "agent-card-red"
+        else:
+            card2 = "agent-card-green"
+        st.markdown(f"<div class='{card2}'>", unsafe_allow_html=True)
         st.markdown(f"{badge(a2_src)} &nbsp; <strong>AGENT 02 // WORK IQ ENGAGEMENT ROUTER</strong>", unsafe_allow_html=True)
         if is_overridden:
             st.markdown(f'<div class="override-banner">🔴 OVERRIDE ACTIVE — burnout_index={burnout_index} > 2.0</div>', unsafe_allow_html=True)
@@ -206,7 +214,11 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
     st.markdown("---")
     c3, c4 = st.columns(2)
     with c3:
-        st.markdown(f"<div class='{'agent-card-green' if gate_status=='VOUCHER_APPROVED' else 'agent-card-red'}'>", unsafe_allow_html=True)
+        if gate_status == "VOUCHER_APPROVED":
+            card3 = "agent-card-green"
+        else:
+            card3 = "agent-card-red"
+        st.markdown(f"<div class='{card3}'>", unsafe_allow_html=True)
         st.markdown(f"{badge(a3_src)} &nbsp; <strong>AGENT 03 // FOUNDRY IQ EVALUATION GATE</strong>", unsafe_allow_html=True)
         st.markdown("#### 🛡️ Evaluation Gate")
         st.markdown(f"**Status:** {'✅ VOUCHER APPROVED' if gate_status=='VOUCHER_APPROVED' else '🔁 REMEDIATION LOOP TRIGGERED'}")
@@ -237,8 +249,14 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary"):
     st.markdown("### 🔄 Multi-Agent Orchestration Flow")
     f1,f2,f3,f4 = st.columns(4)
     f1.success(f"**Agent 1**\nFabric IQ\n✅ {a1_src}")
-    f2.error(f"**Agent 2**\nWork IQ\n🔴 OVERRIDE") if is_overridden else f2.success(f"**Agent 2**\nWork IQ\n✅ {a2_src}")
-    f3.success(f"**Agent 3**\nFoundry IQ\n✅ VOUCHER") if gate_status=="VOUCHER_APPROVED" else f3.error(f"**Agent 3**\nFoundry IQ\n🔁 REMEDIATION")
+    if is_overridden:
+        f2.error("**Agent 2**\nWork IQ\n🔴 OVERRIDE")
+    else:
+        f2.success(f"**Agent 2**\nWork IQ\n✅ {a2_src}")
+    if gate_status == "VOUCHER_APPROVED":
+        f3.success("**Agent 3**\nFoundry IQ\n✅ VOUCHER")
+    else:
+        f3.error("**Agent 3**\nFoundry IQ\n🔁 REMEDIATION")
     f4.info(f"**Agent 4**\nManager\n📊 {a4_src}")
 
     # AZURE PROOF
