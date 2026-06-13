@@ -15,7 +15,7 @@
 
 ## 🎬 Demo Video
 
-▶️ Watch the full demo → (5 min walkthrough of all 4 agents + override scenario)
+▶️ **[Watch the full demo →](https://youtu.be/uLHIZ8jNALo)** *(walkthrough of all 4 agents + override scenario)*
 
 🔴 **[Live App →](https://apex-orchestrator-ensn6hvxntxquaothjjaxv.streamlit.app/)**
 
