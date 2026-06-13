@@ -65,13 +65,23 @@ if not _az_key: _az_key = os.getenv("AZURE_OPENAI_KEY", "")
 
 if _az_endpoint and _az_key:
     try:
-        from openai import AzureOpenAI
-        _dep = azure_deployment.strip() if azure_deployment.strip() else os.getenv("AZURE_DEPLOYMENT", "gpt-4o-mini")
-        client = AzureOpenAI(
-            azure_endpoint=_az_endpoint,
-            api_key=_az_key,
-            api_version="2024-02-01"
-        )
+        _dep = azure_deployment.strip() if azure_deployment.strip() else os.getenv("AZURE_DEPLOYMENT", "gpt-4.1-mini")
+        if "services.ai.azure.com" in _az_endpoint:
+            # New Foundry unified endpoint
+            _base = _az_endpoint.rstrip("/") + f"/openai/deployments/{_dep}"
+            client = OpenAI(
+                api_key=_az_key,
+                base_url=_base,
+                default_headers={"api-key": _az_key}
+            )
+        else:
+            # Classic Azure OpenAI endpoint
+            from openai import AzureOpenAI
+            client = AzureOpenAI(
+                azure_endpoint=_az_endpoint,
+                api_key=_az_key,
+                api_version="2024-02-01"
+            )
         MODEL         = _dep
         backend_label = f"Azure AI Foundry · {_dep}"
         using_azure   = True
@@ -466,4 +476,3 @@ if st.button("⚡ Execute Infrastructure Inference Loop", type="primary", use_co
     else:
         f3.error(f"**Agent 3**\nFoundry IQ\n🔁 Remediation")
     f4.info(f"**Agent 4**\nManager\n📊 {readiness.split()[0]}")
-
