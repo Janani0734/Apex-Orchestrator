@@ -201,7 +201,7 @@ uvicorn main:app --reload
 
 If you find this project useful, **please vote for it on the Agents League Discord poll** 
 
-👉 **[Vote here → aka.ms/agentsleague/discord](https://aka.ms/agentsleague/discord)**
+👉 **[Vote here → aka.ms/agentsleague/discord](https://discord.com/channels/1113626258182504448/1515416350674259978)**
 
 ---
 
