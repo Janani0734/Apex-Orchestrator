@@ -213,3 +213,9 @@ Co-inventor on Government of India Patent No. 202641043122 A - edge-cloud AI/IoT
 
 > *Watching developers around me struggle to balance certification deadlines with back-to-back meetings inspired this project — burnout shouldn't be the price of staying technically sharp.*
 
+## 🎓 Student Status Confirmation
+
+I confirm that I am a final-year B.Tech Information Technology student at KPR Institute of Engineering and Technology, Coimbatore (Graduating 2026), submitting this project as a Student entry for the Microsoft Agents League Hackathon 2026 - Reasoning Agents track.
+
+**LinkedIn:** [www.linkedin.com/in/janani-r-70a590267](https://www.linkedin.com/in/janani-r-70a590267)
+
