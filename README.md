@@ -21,15 +21,15 @@
 
 ## 📸 Screenshots
 
-### 1. Live Telemetry Input — Azure Foundry Connected
+### 1. Live Telemetry Input - Azure Foundry Connected
 ![Dashboard](screenshots/01-dashboard-azure-connected.jpg)
 Real-time sliders feed meeting density, focus reserve, and practice score into the orchestration engine. The system confirms a live connection to **Microsoft Azure AI Foundry (gpt-4.1-mini)** via `ai-project-ai-resource.openai.azure.com`.
 
-### 2. Agent Override Triggered — Burnout Detected
+### 2. Agent Override Triggered - Burnout Detected
 ![Override Active](screenshots/02-override-active.jpg)
-With 30 meeting hours and only 5 focus hours, Work IQ computes `burnout_index = 6.0` — exceeding the 2.0 safety threshold. Agent 2 overrides Agent 1's study plan in real time, and the Gate Status flips to **REMEDIATION**.
+With 30 meeting hours and only 5 focus hours, Work IQ computes `burnout_index = 6.0` - exceeding the 2.0 safety threshold. Agent 2 overrides Agent 1's study plan in real time, and the Gate Status flips to **REMEDIATION**.
 
-### 3. Transparent Reasoning Chain — Conflict Resolution Logs
+### 3. Transparent Reasoning Chain - Conflict Resolution Logs
 ![Agent 2 Logs](screenshots/03-agent2-reasoning-logs.jpg)
 Every override is fully explainable. The structured reasoning trace shows `METRIC → THRESHOLD CHECK → CONFLICT → RESOLUTION → AGENT SIGNAL`, with the underlying JSON confirming `"provider": "AZURE_FOUNDRY"` and `"action": "FORCE_DOWNGRADE_OVERRIDE"`.
 
@@ -39,7 +39,7 @@ All 4 agents visible end-to-end, each tagged with their execution provider. The 
 
 ### 5. Happy Path — Voucher Approved
 ![Happy Path](screenshots/05-happy-path-approved.jpg)
-With balanced signals (10 meeting hrs, 20 focus hrs, 85% score), burnout index drops to 0.5, no override is triggered, and the Foundry IQ gate approves the certification voucher — **System Status: LEARNER ON TRACK**.
+With balanced signals (10 meeting hrs, 20 focus hrs, 85% score), burnout index drops to 0.5, no override is triggered, and the Foundry IQ gate approves the certification voucher - **System Status: LEARNER ON TRACK**.
 
 ### 6. Foundry-Generated Practice Question & Manager Insights
 ![Practice Question](screenshots/06-foundry-practice-question.jpg)
@@ -137,6 +137,13 @@ Agent 2 OVERRIDE: burnout_index=4.33 > threshold 2.0
 System status: ⚠️ AGENT OVERRIDE ACTIVE
 ```
 
+> **Design note:** The `burnout_index > 2.0` threshold acts as a deterministic, 
+> auditable safety guardrail (covered by the Pytest suite). The resulting 
+> override strategy — communication channel shift, study load reduction, 
+> timeline extension — is generated dynamically by gpt-4.1-mini reasoning 
+> over that signal, not hardcoded. This guardrail + LLM pattern mirrors 
+> production-grade agent safety design.
+
 ---
 
 ## 🏗️ Project Structure
@@ -220,6 +227,14 @@ uvicorn main:app --reload
 - ✅ **Graceful fallback** - system degrades safely when API unavailable
 - ✅ **No credentials in repo** - all secrets via environment variables
 - ✅ **Synthetic demo data** - `data/data.json` contains only fictional learner IDs (L-1001, L-1002); no real employee data is used anywhere in this system
+- ✅ **Privacy-by-design** — synthetic telemetry is a deliberate architectural choice for an HR/burnout-sensitive domain, not a placeholder. Production deployment would route real telemetry through the same anonymization layer demonstrated by Agent 4.
+
+---
+
+## 🛣️ Future Roadmap
+
+- **Phase 5 — Persistent Learner Memory:** Session and cross-run memory via Foundry Agent Service, enabling "vs. previous assessment" trend analysis.
+- **Phase 6 — RAG-Grounded Evaluation:** Vector-retrieval pipeline over Microsoft Learn documentation for Foundry IQ's practice question generation.
 
 ---
 
