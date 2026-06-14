@@ -3,7 +3,7 @@
 [![Live Demo](https://img.shields.io/badge/🔴_Live_Demo-Streamlit-FF4B4B?style=for-the-badge)](https://apex-orchestrator-ensn6hvxntxquaothjjaxv.streamlit.app/)
 [![Track](https://img.shields.io/badge/Track-Reasoning_Agents-6366f1?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Microsoft IQ](https://img.shields.io/badge/Microsoft_IQ-Fabric_+_Work_+_Foundry-0078d4?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
-[![Model](https://img.shields.io/badge/LLM-LLaMA_3.1_via_Groq-f97316?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
+[![Model](https://img.shields.io/badge/LLM-gpt--4.1--mini_via_Azure_Foundry-0078d4?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Azure](https://img.shields.io/badge/Azure_AI-Foundry_Ready-0078d4?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 [![Tests](https://img.shields.io/badge/Tests-Pytest_Suite-22c55e?style=for-the-badge)](https://github.com/Janani0734/Apex-Orchestrator)
 
