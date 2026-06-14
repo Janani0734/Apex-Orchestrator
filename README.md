@@ -114,7 +114,7 @@ All three Microsoft IQ intelligence layers are integrated as distinct agent pers
 |---|---|---|
 | **Fabric IQ** | Study Planner | Knowledge retrieval layer - maps certifications to skills, generates grounded curriculum |
 | **Work IQ** | Engagement Router | Work context layer - reads meeting density & focus signals to protect deep-work zones |
-| **Foundry IQ** | Evaluation Gate | Grounded assessment layer - generates cited practice questions, enforces pass threshold |
+| **Foundry IQ** | Evaluation Gate | Grounded assessment layer - generates Azure-aligned practice questions and enforces pass threshold |
 
 ---
 
