@@ -27,7 +27,7 @@ Real-time sliders feed meeting density, focus reserve, and practice score into t
 
 ### 2. Agent Override Triggered - Burnout Detected
 ![Override Active](screenshots/02-override-active.jpg)
-With 30 meeting hours and only 5 focus hours, Work IQ computes `burnout_index = 6.0` - exceeding the 2.0 safety threshold. Agent 2 overrides Agent 1's study plan in real time, and the Gate Status flips to **REMEDIATION**.
+With 30 meeting hours and only 5 focus hours, Work IQ computes `burnout_index = 6.0` exceeding the 2.0 safety threshold. Agent 2 overrides Agent 1's study plan in real time, and the Gate Status flips to **REMEDIATION**.
 
 ### 3. Transparent Reasoning Chain - Conflict Resolution Logs
 ![Agent 2 Logs](screenshots/03-agent2-reasoning-logs.jpg)
