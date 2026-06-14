@@ -15,7 +15,7 @@
 
 ## 🎬 Demo Video
 
-▶️ **[Watch the full demo →](https://youtu.be/uLHIZ8jNALo)** *(2 min walkthrough of all 4 agents + override scenario)*
+▶️ **[Watch the full demo →](https://youtu.be/uLHIZ8jNALo)** *(5 min walkthrough of all 4 agents + override scenario)*
 
 🔴 **[Live App →](https://apex-orchestrator-ensn6hvxntxquaothjjaxv.streamlit.app/)**
 
@@ -211,7 +211,7 @@ Built by **Janani R**, B.Tech Information Technology (2026), KPR Institute of En
 
 Co-inventor on Government of India Patent No. 202641043122 A - edge-cloud AI/IoT system.
 
-> *Watching developers around me struggle to balance certification deadlines with back-to-back meetings inspired this project — burnout shouldn't be the price of staying technically sharp.*
+> *Watching developers around me struggle to balance certification deadlines with back-to-back meetings inspired this project - burnout shouldn't be the price of staying technically sharp.*
 
 ## 🎓 Student Status Confirmation
 
