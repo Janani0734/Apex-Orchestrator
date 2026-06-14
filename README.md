@@ -37,7 +37,7 @@ Every override is fully explainable. The structured reasoning trace shows `METRI
 ![Orchestration Flow](screenshots/04-orchestration-flow.jpg)
 All 4 agents visible end-to-end, each tagged with their execution provider. The live code panel shows the real `AzureOpenAI` client configuration powering every agent call.
 
-### 5. Happy Path — Voucher Approved
+### 5. Happy Path - Voucher Approved
 ![Happy Path](screenshots/05-happy-path-approved.jpg)
 With balanced signals (10 meeting hrs, 20 focus hrs, 85% score), burnout index drops to 0.5, no override is triggered, and the Foundry IQ gate approves the certification voucher - **System Status: LEARNER ON TRACK**.
 
