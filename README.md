@@ -19,6 +19,32 @@
 
 🔴 **[Live App →](https://apex-orchestrator-ensn6hvxntxquaothjjaxv.streamlit.app/)**
 
+## 📸 Screenshots
+
+### 1. Live Telemetry Input — Azure Foundry Connected
+![Dashboard](screenshots/01-dashboard-azure-connected.jpg)
+Real-time sliders feed meeting density, focus reserve, and practice score into the orchestration engine. The system confirms a live connection to **Microsoft Azure AI Foundry (gpt-4.1-mini)** via `ai-project-ai-resource.openai.azure.com`.
+
+### 2. Agent Override Triggered — Burnout Detected
+![Override Active](screenshots/02-override-active.jpg)
+With 30 meeting hours and only 5 focus hours, Work IQ computes `burnout_index = 6.0` — exceeding the 2.0 safety threshold. Agent 2 overrides Agent 1's study plan in real time, and the Gate Status flips to **REMEDIATION**.
+
+### 3. Transparent Reasoning Chain — Conflict Resolution Logs
+![Agent 2 Logs](screenshots/03-agent2-reasoning-logs.jpg)
+Every override is fully explainable. The structured reasoning trace shows `METRIC → THRESHOLD CHECK → CONFLICT → RESOLUTION → AGENT SIGNAL`, with the underlying JSON confirming `"provider": "AZURE_FOUNDRY"` and `"action": "FORCE_DOWNGRADE_OVERRIDE"`.
+
+### 4. Multi-Agent Orchestration Flow + Azure Integration Proof
+![Orchestration Flow](screenshots/04-orchestration-flow.jpg)
+All 4 agents visible end-to-end, each tagged with their execution provider. The live code panel shows the real `AzureOpenAI` client configuration powering every agent call.
+
+### 5. Happy Path — Voucher Approved
+![Happy Path](screenshots/05-happy-path-approved.jpg)
+With balanced signals (10 meeting hrs, 20 focus hrs, 85% score), burnout index drops to 0.5, no override is triggered, and the Foundry IQ gate approves the certification voucher — **System Status: LEARNER ON TRACK**.
+
+### 6. Foundry-Generated Practice Question & Manager Insights
+![Practice Question](screenshots/06-foundry-practice-question.jpg)
+Agent 3 generates a grounded AZ-204 practice question via Azure Foundry with a marked correct answer. Agent 4 simultaneously produces anonymized, PII-stripped cohort intelligence for engineering leadership.
+
 ---
 
 ## 🧠 How the Multi-Agent Reasoning Works
