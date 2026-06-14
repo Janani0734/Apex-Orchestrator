@@ -139,8 +139,8 @@ System status: ⚠️ AGENT OVERRIDE ACTIVE
 
 > **Design note:** The `burnout_index > 2.0` threshold acts as a deterministic, 
 > auditable safety guardrail (covered by the Pytest suite). The resulting 
-> override strategy — communication channel shift, study load reduction, 
-> timeline extension — is generated dynamically by gpt-4.1-mini reasoning 
+> override strategy - communication channel shift, study load reduction, 
+> timeline extension - is generated dynamically by gpt-4.1-mini reasoning 
 > over that signal, not hardcoded. This guardrail + LLM pattern mirrors 
 > production-grade agent safety design.
 
