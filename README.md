@@ -227,14 +227,14 @@ uvicorn main:app --reload
 - ✅ **Graceful fallback** - system degrades safely when API unavailable
 - ✅ **No credentials in repo** - all secrets via environment variables
 - ✅ **Synthetic demo data** - `data/data.json` contains only fictional learner IDs (L-1001, L-1002); no real employee data is used anywhere in this system
-- ✅ **Privacy-by-design** — synthetic telemetry is a deliberate architectural choice for an HR/burnout-sensitive domain, not a placeholder. Production deployment would route real telemetry through the same anonymization layer demonstrated by Agent 4.
+- ✅ **Privacy-by-design** - synthetic telemetry is a deliberate architectural choice for an HR/burnout-sensitive domain, not a placeholder. Production deployment would route real telemetry through the same anonymization layer demonstrated by Agent 4.
 
 ---
 
 ## 🛣️ Future Roadmap
 
-- **Phase 5 — Persistent Learner Memory:** Session and cross-run memory via Foundry Agent Service, enabling "vs. previous assessment" trend analysis.
-- **Phase 6 — RAG-Grounded Evaluation:** Vector-retrieval pipeline over Microsoft Learn documentation for Foundry IQ's practice question generation.
+- **Phase 5 - Persistent Learner Memory:** Session and cross-run memory via Foundry Agent Service, enabling "vs. previous assessment" trend analysis.
+- **Phase 6 - RAG-Grounded Evaluation:** Vector-retrieval pipeline over Microsoft Learn documentation for Foundry IQ's practice question generation.
 
 ---
 
